@@ -45,7 +45,10 @@ func (l *Lexer) scanToken() {
 	ch := l.line[l.curr]
 	var token Token
 
-	if ch == ';' {
+	if ch == ' ' || ch == '\r' || ch == '\t' {
+		l.advance()
+		return
+	} else if ch == ';' {
 		token = l.addToken(SEMICOLON)
 	} else if ch == '=' {
 		next := l.match('=')

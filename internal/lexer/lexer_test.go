@@ -27,13 +27,22 @@ var _ = Describe("Lexer", func() {
 		})
 	})
 
-	// Context("sent whitespace chars", func() { // todo: fix this
-	// 	It("should return an empty list of tokens", func() {
-	// 		in := ""
-	// 		result, _ := lexer.ScanLine(in)
-	// 		Expect(result).To(Equal([]Token{}))
-	// 	})
-	// })
+	Context("sent whitespace chars", func() {
+		When("its a single whitespace", func() {
+			It("should return an empty list of tokens", func() {
+				in := " "
+				result, _ := lexer.ScanLine(in)
+				Expect(result).To(Equal([]Token{}))
+			})
+		})
+		When("its a multiple whitespaces", func() {
+			It("should return an empty list of tokens", func() {
+				in := " "
+				result, _ := lexer.ScanLine(in)
+				Expect(result).To(Equal([]Token{}))
+			})
+		})
+	})
 
 	Context("sent a single char identifier", func() {
 		It("should return a list with just a single token", func() {
