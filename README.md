@@ -3,16 +3,16 @@
 ### Basic Syntax
 
 ```
-foo = "foo"
+var foo = "foo";
 
-log(foo)
+log(foo);
 
-do bar() {
-    baz = "baz"
+fn bar() {
+    baz = "baz";
 }
 
-do main() {
-    bar()
+fn main() {
+    bar();
 }
 ```
 
