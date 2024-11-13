@@ -12,9 +12,8 @@ func TestLexer(t *testing.T) {
 	RunSpecs(t, "Lexer Suite")
 }
 
-var lexer Lexer
-
 var _ = Describe("Lexer", func() {
+	var lexer Lexer
 
 	BeforeEach(func() {
 		lexer = Lexer{}
@@ -28,7 +27,7 @@ var _ = Describe("Lexer", func() {
 		})
 	})
 
-	Context("when sent a single identifier", func() {
+	Context("when sent a single char identifier", func() {
 		It("should return a list with just a single token", func() {
 			in := ";"
 			result, _ := lexer.ScanLine(in)
@@ -39,6 +38,20 @@ var _ = Describe("Lexer", func() {
 				Line:    1,
 			}
 			Expect(result).To(Equal([]Token{expected}))
+		})
+
+		When("there is a single and multi-string version", func() {
+			It("should return a list with just a single token", func() {
+				in := "="
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    EQUAL,
+					Literal: "=",
+					Lexeme:  "=",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected}))
+			})
 		})
 	})
 
