@@ -61,6 +61,14 @@ func (l *Lexer) scanToken() error {
 		return nil
 	} else if ch == ';' {
 		token = l.addToken(SEMICOLON)
+	} else if ch == '!' {
+		next := l.match('=')
+		if next {
+			l.advance()
+			token = l.addToken(BANG_EQ)
+		} else {
+			token = l.addToken(BANG)
+		}
 	} else if ch == '=' {
 		next := l.match('=')
 		if next {

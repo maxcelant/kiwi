@@ -131,13 +131,27 @@ var _ = Describe("Lexer", func() {
 
 	Context("comparators", func() {
 		When("its an equal-equal sign", func() {
-			It("should return a list with just a single token", func() {
+			It("should return a list with just a equal-equal token", func() {
 				in := "=="
 				result, _ := lexer.ScanLine(in)
 				expected := Token{
 					Type:    EQUAL_EQUAL,
 					Literal: "==",
 					Lexeme:  "==",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+
+		When("its a not-equal sign", func() {
+			It("should return a list with just a not-equal token", func() {
+				in := "!="
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    BANG_EQ,
+					Literal: "!=",
+					Lexeme:  "!=",
 					Line:    1,
 				}
 				Expect(result).To(Equal([]Token{expected, eofToken}))
