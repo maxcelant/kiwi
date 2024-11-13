@@ -21,9 +21,10 @@ var _ = Describe("Lexer", func() {
 	})
 
 	Context("when sent an empty string", func() {
-		It("should return an empty list", func() {
-			result := lexer.lex()
-			Expect(result).To(Equal([]string{}))
+		It("should return an empty list of tokens", func() {
+			in := ""
+			result, _ := lexer.ScanLine(in)
+			Expect(result).To(Equal([]Token{}))
 		})
 	})
 })

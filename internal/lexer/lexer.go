@@ -1,5 +1,15 @@
 package lexer
 
-func Add(a, b int) int {
-	return a + b
+type Lexer struct {
+	GlobalPosition  int64
+	CurrentPosition int64
+}
+
+func (l *Lexer) ScanLine(line string) ([]Token, error) {
+	l.CurrentPosition = 0
+	if line == "" {
+		return []Token{}, nil
+	}
+
+	return []Token{}, nil
 }
