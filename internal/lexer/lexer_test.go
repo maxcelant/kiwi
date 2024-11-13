@@ -181,6 +181,32 @@ var _ = Describe("Lexer", func() {
 				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
 		})
+
+		When("its greater-than related", func() {
+			It("should return a list with just a greater-than token", func() {
+				in := ">"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    GREATER,
+					Literal: ">",
+					Lexeme:  ">",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+
+			It("should return a list with just a greater-than-or-equal token", func() {
+				in := ">="
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    GREATER_EQ,
+					Literal: ">=",
+					Lexeme:  ">=",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
 	})
 
 	Context("multiple tokens", func() {

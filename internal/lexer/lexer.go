@@ -77,6 +77,14 @@ func (l *Lexer) scanToken() error {
 		} else {
 			token = l.addToken(LESS)
 		}
+	} else if ch == '>' {
+		next := l.match('=')
+		if next {
+			l.advance()
+			token = l.addToken(GREATER_EQ)
+		} else {
+			token = l.addToken(GREATER)
+		}
 	} else if ch == '=' {
 		next := l.match('=')
 		if next {
