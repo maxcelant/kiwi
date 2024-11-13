@@ -1,6 +1,9 @@
 package lexer
 
-import "strconv"
+import (
+	"errors"
+	"strconv"
+)
 
 type Lexer struct {
 	// globalPos int64
@@ -38,20 +41,24 @@ func (l *Lexer) ScanLine(line string) ([]Token, error) {
 		if l.curr >= int64(len(line)) {
 			break
 		}
-		l.scanToken()
+		err := l.scanToken()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	l.tokens = append(l.tokens, Token{Type: EOF, Lexeme: "", Literal: nil, Line: l.currLine})
 	return l.tokens, nil
 }
 
-func (l *Lexer) scanToken() {
-	ch := l.line[l.curr]
+func (l *Lexer) scanToken() error {
 	var token Token
+	var err error
+	ch := l.line[l.curr]
 
 	if ch == ' ' || ch == '\r' || ch == '\t' {
 		l.advance()
-		return
+		return nil
 	} else if ch == ';' {
 		token = l.addToken(SEMICOLON)
 	} else if ch == '=' {
@@ -65,10 +72,14 @@ func (l *Lexer) scanToken() {
 	} else if ch == '"' {
 		token = l.handleString()
 	} else if isNumber(ch) {
-		token = l.handleNumber()
+		token, err = l.handleNumber()
+		if err != nil {
+			return err
+		}
 	}
 	l.tokens = append(l.tokens, token)
 	l.advance()
+	return nil
 }
 
 func (l *Lexer) addToken(tokenType TokenType) Token {
@@ -93,18 +104,21 @@ func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) To
 	return token
 }
 
-func (l *Lexer) handleNumber() Token {
+func (l *Lexer) handleNumber() (Token, error) {
 	for {
 		next := l.peek()
 		if next == 0 || next == ' ' {
 			break
+		}
+		if isAlpha(next) {
+			return Token{}, errors.New("invalid number: contains alphabetic characters")
 		}
 		if isNumber(next) {
 			l.advance()
 		}
 	}
 	literal, _ := Number(l.line[l.start : l.curr+1]) // todo: handle error
-	return l.addTokenWithLiteral(NUMBER, literal)
+	return l.addTokenWithLiteral(NUMBER, literal), nil
 }
 
 func (l *Lexer) handleString() Token {

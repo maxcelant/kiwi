@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"errors"
 	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -118,6 +119,14 @@ var _ = Describe("Lexer", func() {
 				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
 		})
+
+		When("its a digit with alpha characters in it", func() {
+			It("should return an error", func() {
+				in := "123abc"
+				_, err := lexer.ScanLine(in)
+				Expect(err).To(Equal(errors.New("invalid number: contains alphabetic characters")))
+			})
+		})
 	})
 
 	Context("comparators", func() {
@@ -151,6 +160,26 @@ var _ = Describe("Lexer", func() {
 					Type:    SEMICOLON,
 					Literal: ";",
 					Lexeme:  ";",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{exp1, exp2, eofToken}))
+			})
+		})
+
+		When("given two string tokens", func() {
+			It("should return a list with two string tokens", func() {
+				in := "\"foo\" \"bar\""
+				result, _ := lexer.ScanLine(in)
+				exp1 := Token{
+					Type:    STRING,
+					Literal: "foo",
+					Lexeme:  "\"foo\"",
+					Line:    1,
+				}
+				exp2 := Token{
+					Type:    STRING,
+					Literal: "bar",
+					Lexeme:  "\"bar\"",
 					Line:    1,
 				}
 				Expect(result).To(Equal([]Token{exp1, exp2, eofToken}))
