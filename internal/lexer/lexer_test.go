@@ -130,7 +130,7 @@ var _ = Describe("Lexer", func() {
 	})
 
 	Context("comparators", func() {
-		When("its an equal-equal sign", func() {
+		When("its equal related", func() {
 			It("should return a list with just a equal-equal token", func() {
 				in := "=="
 				result, _ := lexer.ScanLine(in)
@@ -142,9 +142,7 @@ var _ = Describe("Lexer", func() {
 				}
 				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
-		})
 
-		When("its a not-equal sign", func() {
 			It("should return a list with just a not-equal token", func() {
 				in := "!="
 				result, _ := lexer.ScanLine(in)
@@ -152,6 +150,32 @@ var _ = Describe("Lexer", func() {
 					Type:    BANG_EQ,
 					Literal: "!=",
 					Lexeme:  "!=",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+
+		When("its less-than related", func() {
+			It("should return a list with just a less-than token", func() {
+				in := "<"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    LESS,
+					Literal: "<",
+					Lexeme:  "<",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+
+			It("should return a list with just a less-than-or-equal token", func() {
+				in := "<="
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    LESS_EQ,
+					Literal: "<=",
+					Lexeme:  "<=",
 					Line:    1,
 				}
 				Expect(result).To(Equal([]Token{expected, eofToken}))
