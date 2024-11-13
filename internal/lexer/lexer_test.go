@@ -27,4 +27,32 @@ var _ = Describe("Lexer", func() {
 			Expect(result).To(Equal([]Token{}))
 		})
 	})
+
+	Context("when sent a single identifier", func() {
+		It("should return a list with just a single token", func() {
+			in := ";"
+			result, _ := lexer.ScanLine(in)
+			expected := Token{
+				Type:    SEMICOLON,
+				Literal: ";",
+				Lexeme:  ";",
+				Line:    1,
+			}
+			Expect(result).To(Equal([]Token{expected}))
+		})
+	})
+
+	Context("when sent a multi-string identifier", func() {
+		It("should return a list with just a single token", func() {
+			in := "=="
+			result, _ := lexer.ScanLine(in)
+			expected := Token{
+				Type:    EQUAL_EQUAL,
+				Literal: "==",
+				Lexeme:  "==",
+				Line:    1,
+			}
+			Expect(result).To(Equal([]Token{expected}))
+		})
+	})
 })
