@@ -14,16 +14,18 @@ func TestLexer(t *testing.T) {
 
 var _ = Describe("Lexer", func() {
 	var lexer Lexer
+	var eofToken Token
 
 	BeforeEach(func() {
 		lexer = Lexer{}
+		eofToken = Token{Type: EOF, Lexeme: "", Literal: nil, Line: 1}
 	})
 
 	Context("empty", func() {
 		It("should return an empty list of tokens", func() {
 			in := ""
 			result, _ := lexer.ScanLine(in)
-			Expect(result).To(Equal([]Token{}))
+			Expect(result).To(Equal([]Token{eofToken}))
 		})
 	})
 
@@ -32,14 +34,14 @@ var _ = Describe("Lexer", func() {
 			It("should return an empty list of tokens", func() {
 				in := " "
 				result, _ := lexer.ScanLine(in)
-				Expect(result).To(Equal([]Token{}))
+				Expect(result).To(Equal([]Token{eofToken}))
 			})
 		})
 		When("its a multiple whitespaces", func() {
 			It("should return an empty list of tokens", func() {
 				in := " "
 				result, _ := lexer.ScanLine(in)
-				Expect(result).To(Equal([]Token{}))
+				Expect(result).To(Equal([]Token{eofToken}))
 			})
 		})
 	})
@@ -54,7 +56,7 @@ var _ = Describe("Lexer", func() {
 				Lexeme:  ";",
 				Line:    1,
 			}
-			Expect(result).To(Equal([]Token{expected}))
+			Expect(result).To(Equal([]Token{expected, eofToken}))
 		})
 
 		When("there is a single and multi-char version", func() {
@@ -67,7 +69,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "=",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected}))
+				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
 		})
 	})
@@ -83,7 +85,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "\"foobar\"",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected}))
+				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
 		})
 	})
@@ -99,7 +101,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "1",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected}))
+				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
 		})
 
@@ -113,7 +115,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "123",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected}))
+				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
 		})
 	})
@@ -129,7 +131,29 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "==",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected}))
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+	})
+
+	Context("multiple tokens", func() {
+		When("given two single char tokens", func() {
+			It("should return a list with two tokens", func() {
+				in := "=;"
+				result, _ := lexer.ScanLine(in)
+				exp1 := Token{
+					Type:    EQUAL,
+					Literal: "=",
+					Lexeme:  "=",
+					Line:    1,
+				}
+				exp2 := Token{
+					Type:    SEMICOLON,
+					Literal: ";",
+					Lexeme:  ";",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{exp1, exp2, eofToken}))
 			})
 		})
 	})

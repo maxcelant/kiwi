@@ -32,9 +32,6 @@ func (l *Lexer) ScanLine(line string) ([]Token, error) {
 	l.currLine += 1
 	l.curr = 0
 	l.tokens = []Token{}
-	if line == "" {
-		return l.tokens, nil
-	}
 
 	for {
 		l.start = l.curr
@@ -44,6 +41,7 @@ func (l *Lexer) ScanLine(line string) ([]Token, error) {
 		l.scanToken()
 	}
 
+	l.tokens = append(l.tokens, Token{Type: EOF, Lexeme: "", Literal: nil, Line: l.currLine})
 	return l.tokens, nil
 }
 
@@ -69,7 +67,6 @@ func (l *Lexer) scanToken() {
 	} else if isNumber(ch) {
 		token = l.handleNumber()
 	}
-
 	l.tokens = append(l.tokens, token)
 	l.advance()
 }
