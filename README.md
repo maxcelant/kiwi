@@ -1,4 +1,4 @@
-# Kiwi Programming Language
+# Kiwi Programming Language 🥝
 
 ### Basic Syntax
 
