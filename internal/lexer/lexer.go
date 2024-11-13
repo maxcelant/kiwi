@@ -56,17 +56,7 @@ func (l *Lexer) scanToken() {
 			token = l.addToken(EQUAL)
 		}
 	} else if ch == '"' {
-		for {
-			next := l.peek()
-			if next == 0 || next == '"' {
-				break
-			}
-			if isAlpha(next) {
-				l.advance()
-			}
-		}
-		l.advance()
-		token = l.addTokenWithLiteral(STRING, l.line[l.start+1:l.curr])
+		token = l.handleString()
 	}
 
 	l.tokens = append(l.tokens, token)
@@ -93,6 +83,20 @@ func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) To
 		Line:    l.currLine,
 	}
 	return token
+}
+
+func (l *Lexer) handleString() Token {
+	for {
+		next := l.peek()
+		if next == 0 || next == '"' {
+			break
+		}
+		if isAlpha(next) {
+			l.advance()
+		}
+	}
+	l.advance()
+	return l.addTokenWithLiteral(STRING, l.line[l.start+1:l.curr])
 }
 
 func (l *Lexer) advance() {
