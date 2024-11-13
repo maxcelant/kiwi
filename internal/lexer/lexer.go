@@ -9,6 +9,14 @@ type Lexer struct {
 	line     string
 }
 
+func isAlpha(b byte) bool {
+	return (b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z')
+}
+
+// func isNumber(b byte) bool {
+// 	return (b >= '0' && b <= '9')
+// }
+
 func String(ch byte) string {
 	return string(ch)
 }
@@ -37,10 +45,9 @@ func (l *Lexer) scanToken() {
 	ch := l.line[l.curr]
 	var token Token
 
-	switch ch {
-	case ';':
+	if ch == ';' {
 		token = l.addToken(SEMICOLON)
-	case '=':
+	} else if ch == '=' {
 		next := l.match('=')
 		if next {
 			l.advance()
@@ -48,6 +55,18 @@ func (l *Lexer) scanToken() {
 		} else {
 			token = l.addToken(EQUAL)
 		}
+	} else if ch == '"' {
+		for {
+			next := l.peek()
+			if next == 0 || next == '"' {
+				break
+			}
+			if isAlpha(next) {
+				l.advance()
+			}
+		}
+		l.advance()
+		token = l.addTokenWithLiteral(STRING, l.line[l.start+1:l.curr])
 	}
 
 	l.tokens = append(l.tokens, token)
@@ -65,15 +84,16 @@ func (l *Lexer) addToken(tokenType TokenType) Token {
 	return token
 }
 
-// func (l *Lexer) addToken(line, tokenType TokenType, literal interface{}) {
-// 	token := Token{
-// 		Type:    tokenType,
-// 		Literal: literal,
-// 		Lexeme:  String(ch),
-// 		Line:    l.currLine,
-// 	}
-
-// }
+func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) Token {
+	ch := l.line[l.start : l.curr+1]
+	token := Token{
+		Type:    tokenType,
+		Literal: literal,
+		Lexeme:  ch,
+		Line:    l.currLine,
+	}
+	return token
+}
 
 func (l *Lexer) advance() {
 	l.curr += 1
