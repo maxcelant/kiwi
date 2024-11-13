@@ -19,7 +19,7 @@ var _ = Describe("Lexer", func() {
 		lexer = Lexer{}
 	})
 
-	Context("sent an empty char", func() {
+	Context("empty", func() {
 		It("should return an empty list of tokens", func() {
 			in := ""
 			result, _ := lexer.ScanLine(in)
@@ -27,7 +27,7 @@ var _ = Describe("Lexer", func() {
 		})
 	})
 
-	Context("sent whitespace chars", func() {
+	Context("whitespaces", func() {
 		When("its a single whitespace", func() {
 			It("should return an empty list of tokens", func() {
 				in := " "
@@ -44,7 +44,7 @@ var _ = Describe("Lexer", func() {
 		})
 	})
 
-	Context("sent a single char identifier", func() {
+	Context("single char identifier", func() {
 		It("should return a list with just a single token", func() {
 			in := ";"
 			result, _ := lexer.ScanLine(in)
@@ -72,21 +72,8 @@ var _ = Describe("Lexer", func() {
 		})
 	})
 
-	Context("sent a multi-char identifier", func() {
-		When("its a two char token", func() {
-			It("should return a list with just a single token", func() {
-				in := "=="
-				result, _ := lexer.ScanLine(in)
-				expected := Token{
-					Type:    EQUAL_EQUAL,
-					Literal: "==",
-					Lexeme:  "==",
-					Line:    1,
-				}
-				Expect(result).To(Equal([]Token{expected}))
-			})
-		})
-		When("its a 3+ char token", func() {
+	Context("strings", func() {
+		When("its a multi-line char token", func() {
 			It("should return a list with just a single string token", func() {
 				in := "\"foobar\""
 				result, _ := lexer.ScanLine(in)
@@ -94,6 +81,52 @@ var _ = Describe("Lexer", func() {
 					Type:    STRING,
 					Literal: "foobar",
 					Lexeme:  "\"foobar\"",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected}))
+			})
+		})
+	})
+
+	Context("numbers", func() {
+		When("its a single digit char token", func() {
+			It("should return a list with just a single digit token", func() {
+				in := "1"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    NUMBER,
+					Literal: 1,
+					Lexeme:  "1",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected}))
+			})
+		})
+
+		When("its a multi-digit char token", func() {
+			It("should return a list with just a single digit token", func() {
+				in := "123"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    NUMBER,
+					Literal: 123,
+					Lexeme:  "123",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected}))
+			})
+		})
+	})
+
+	Context("comparators", func() {
+		When("its an equal-equal sign", func() {
+			It("should return a list with just a single token", func() {
+				in := "=="
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    EQUAL_EQUAL,
+					Literal: "==",
+					Lexeme:  "==",
 					Line:    1,
 				}
 				Expect(result).To(Equal([]Token{expected}))

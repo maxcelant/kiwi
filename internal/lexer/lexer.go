@@ -1,5 +1,7 @@
 package lexer
 
+import "strconv"
+
 type Lexer struct {
 	// globalPos int64
 	start    int64
@@ -13,12 +15,16 @@ func isAlpha(b byte) bool {
 	return (b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z')
 }
 
-// func isNumber(b byte) bool {
-// 	return (b >= '0' && b <= '9')
-// }
+func isNumber(b byte) bool {
+	return (b >= '0' && b <= '9')
+}
 
 func String(ch byte) string {
 	return string(ch)
+}
+
+func Number(s string) (int, error) {
+	return strconv.Atoi(s)
 }
 
 func (l *Lexer) ScanLine(line string) ([]Token, error) {
@@ -60,6 +66,8 @@ func (l *Lexer) scanToken() {
 		}
 	} else if ch == '"' {
 		token = l.handleString()
+	} else if isNumber(ch) {
+		token = l.handleNumber()
 	}
 
 	l.tokens = append(l.tokens, token)
@@ -88,6 +96,20 @@ func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) To
 	return token
 }
 
+func (l *Lexer) handleNumber() Token {
+	for {
+		next := l.peek()
+		if next == 0 || next == ' ' {
+			break
+		}
+		if isNumber(next) {
+			l.advance()
+		}
+	}
+	literal, _ := Number(l.line[l.start : l.curr+1]) // todo: handle error
+	return l.addTokenWithLiteral(NUMBER, literal)
+}
+
 func (l *Lexer) handleString() Token {
 	for {
 		next := l.peek()
@@ -98,7 +120,7 @@ func (l *Lexer) handleString() Token {
 			l.advance()
 		}
 	}
-	l.advance()
+	l.advance() // Skips the closing `"`
 	return l.addTokenWithLiteral(STRING, l.line[l.start+1:l.curr])
 }
 
