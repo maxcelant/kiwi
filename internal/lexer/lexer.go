@@ -28,6 +28,16 @@ var keywords = map[string]TokenType{
 	"nil":    NIL,
 }
 
+func New() *Lexer {
+	return &Lexer{
+		start:    0,
+		curr:     0,
+		currLine: 0,
+		tokens:   []Token{},
+		line:     "",
+	}
+}
+
 func (l *Lexer) ScanLine(line string) ([]Token, error) {
 	l.line = line
 	l.currLine += 1
@@ -170,11 +180,11 @@ func (l *Lexer) handleIdentifier() Token {
 func (l *Lexer) handleNumber() (Token, error) {
 	for {
 		next := l.peek()
-		if next == 0 || next == ' ' {
-			break
-		}
 		if isAlpha(next) {
 			return Token{}, errors.New("invalid number: contains alphabetic characters")
+		}
+		if next == 0 || next == ' ' {
+			break
 		}
 		if isNumber(next) {
 			l.advance()
@@ -187,10 +197,10 @@ func (l *Lexer) handleNumber() (Token, error) {
 func (l *Lexer) handleString() Token {
 	for {
 		next := l.peek()
-		if next == 0 || next == '"' {
+		if next == 0 || next == '"' || !isAlphaNumeric(next) {
 			break
 		}
-		if isAlpha(next) {
+		if isAlphaNumeric(next) {
 			l.advance()
 		}
 	}
@@ -224,6 +234,10 @@ func (l *Lexer) peek() (next byte) {
 
 func (l *Lexer) atEnd() bool {
 	return l.curr >= int64(len(l.line))
+}
+
+func isAlphaNumeric(b byte) bool {
+	return (b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z') || (b >= '0' && b <= '9')
 }
 
 func isAlpha(b byte) bool {

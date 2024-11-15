@@ -5,19 +5,34 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/maxcelant/kiwi/internal/lexer"
 )
 
+var lxr *lexer.Lexer
+
 func run() error {
-	file, err := os.Open("test/sample.kiwi")
+	var file *os.File
+	var err error
+	file, err = os.Open("test/sample.kiwi")
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
+	lxr = lexer.New()
+	tokens := []lexer.Token{}
 	scanner := bufio.NewScanner(file)
+
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		lineTokens, err := lxr.ScanLine(scanner.Text())
+		if err != nil {
+			return err
+		}
+		tokens = append(tokens, lineTokens...)
 	}
+
+	fmt.Println(tokens)
 
 	if err := scanner.Err(); err != nil {
 		return err

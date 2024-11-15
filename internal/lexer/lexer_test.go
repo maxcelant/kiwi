@@ -93,7 +93,7 @@ var _ = Describe("Lexer", func() {
 	})
 
 	Context("strings", func() {
-		When("its a multi-line char token", func() {
+		When("its a string with just alpha characters", func() {
 			It("should return a list with just a single string token", func() {
 				in := "\"foobar\""
 				result, _ := lexer.ScanLine(in)
@@ -101,6 +101,34 @@ var _ = Describe("Lexer", func() {
 					Type:    STRING,
 					Literal: "foobar",
 					Lexeme:  "\"foobar\"",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+
+		When("its a string with just numeric characters", func() {
+			It("should return a list with just a single string token", func() {
+				in := "\"123\""
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    STRING,
+					Literal: "123",
+					Lexeme:  "\"123\"",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+
+		When("its a string with alphanumeric characters", func() {
+			It("should return a list with just a single string token", func() {
+				in := "\"foobar123\""
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    STRING,
+					Literal: "foobar123",
+					Lexeme:  "\"foobar123\"",
 					Line:    1,
 				}
 				Expect(result).To(Equal([]Token{expected, eofToken}))
