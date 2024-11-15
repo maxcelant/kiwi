@@ -14,22 +14,6 @@ type Lexer struct {
 	line     string
 }
 
-func isAlpha(b byte) bool {
-	return (b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z')
-}
-
-func isNumber(b byte) bool {
-	return (b >= '0' && b <= '9')
-}
-
-func String(ch byte) string {
-	return string(ch)
-}
-
-func Number(s string) (int, error) {
-	return strconv.Atoi(s)
-}
-
 func (l *Lexer) ScanLine(line string) ([]Token, error) {
 	l.line = line
 	l.currLine += 1
@@ -206,4 +190,20 @@ func (l *Lexer) peek() (next byte) {
 
 func (l *Lexer) atEnd() bool {
 	return l.curr >= int64(len(l.line))
+}
+
+func isAlpha(b byte) bool {
+	return (b >= 'A' && b <= 'Z') || (b >= 'a' && b <= 'z')
+}
+
+func isNumber(b byte) bool {
+	return (b >= '0' && b <= '9')
+}
+
+func String(ch byte) string {
+	return string(ch)
+}
+
+func Number(s string) (int, error) {
+	return strconv.Atoi(s)
 }
