@@ -75,6 +75,23 @@ var _ = Describe("Lexer", func() {
 		})
 	})
 
+	Context("comments", func() {
+		When("entering double slashes", func() {
+			It("should return an empty list", func() {
+				in := "// this is a comment"
+				result, _ := lexer.ScanLine(in)
+				Expect(result).To(Equal([]Token{eofToken}))
+			})
+		})
+		When("entering double slashes with newline", func() {
+			It("should return an empty list", func() {
+				in := "// this is a comment\n"
+				result, _ := lexer.ScanLine(in)
+				Expect(result).To(Equal([]Token{eofToken}))
+			})
+		})
+	})
+
 	Context("strings", func() {
 		When("its a multi-line char token", func() {
 			It("should return a list with just a single string token", func() {
@@ -202,6 +219,52 @@ var _ = Describe("Lexer", func() {
 					Type:    GREATER_EQ,
 					Literal: ">=",
 					Lexeme:  ">=",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+	})
+
+	Context("braces, parenthesis", func() {
+		When("given a single left brace", func() {
+			It("should return a list with just a single left brace token", func() {
+				in := "{"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    LEFT_BRACE,
+					Literal: "{",
+					Lexeme:  "{",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+
+		When("given a single left parenthesis", func() {
+			It("should return a list with just a single left parenthesis token", func() {
+				in := "("
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    LEFT_PAREN,
+					Literal: "(",
+					Lexeme:  "(",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+	})
+
+	Context("math symbols", func() {
+		When("entering a slash", func() {
+			It("should return a list with a div token", func() {
+				in := "/"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    SLASH,
+					Literal: "/",
+					Lexeme:  "/",
 					Line:    1,
 				}
 				Expect(result).To(Equal([]Token{expected, eofToken}))

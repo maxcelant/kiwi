@@ -18,7 +18,6 @@ const (
 	PLUS
 	MINUS
 	STAR
-	DIV
 	SLASH
 	BANG
 	BANG_EQ

@@ -54,17 +54,23 @@ func (l *Lexer) ScanLine(line string) ([]Token, error) {
 func (l *Lexer) scanToken() error {
 	var token Token
 	var err error
-	ch := l.line[l.curr]
+	ch := l.advance()
 
 	if ch == ' ' || ch == '\r' || ch == '\t' {
-		l.advance()
 		return nil
 	} else if ch == ';' {
 		token = l.addToken(SEMICOLON)
+	} else if ch == '{' {
+		token = l.addToken(LEFT_BRACE)
+	} else if ch == '}' {
+		token = l.addToken(RIGHT_BRACE)
+	} else if ch == '(' {
+		token = l.addToken(LEFT_PAREN)
+	} else if ch == ')' {
+		token = l.addToken(RIGHT_PAREN)
 	} else if ch == '!' {
 		next := l.match('=')
 		if next {
-			l.advance()
 			token = l.addToken(BANG_EQ)
 		} else {
 			token = l.addToken(BANG)
@@ -72,7 +78,6 @@ func (l *Lexer) scanToken() error {
 	} else if ch == '<' {
 		next := l.match('=')
 		if next {
-			l.advance()
 			token = l.addToken(LESS_EQ)
 		} else {
 			token = l.addToken(LESS)
@@ -80,7 +85,6 @@ func (l *Lexer) scanToken() error {
 	} else if ch == '>' {
 		next := l.match('=')
 		if next {
-			l.advance()
 			token = l.addToken(GREATER_EQ)
 		} else {
 			token = l.addToken(GREATER)
@@ -88,10 +92,22 @@ func (l *Lexer) scanToken() error {
 	} else if ch == '=' {
 		next := l.match('=')
 		if next {
-			l.advance()
 			token = l.addToken(EQUAL_EQUAL)
 		} else {
 			token = l.addToken(EQUAL)
+		}
+	} else if ch == '/' {
+		next := l.match('/')
+		if next {
+			for !l.atEnd() && l.peek() != '\n' {
+				l.advance()
+			}
+			if l.peek() == '\n' {
+				l.advance()
+			}
+			return nil
+		} else {
+			token = l.addToken(SLASH)
 		}
 	} else if ch == '"' {
 		token = l.handleString()
@@ -102,12 +118,11 @@ func (l *Lexer) scanToken() error {
 		}
 	}
 	l.tokens = append(l.tokens, token)
-	l.advance()
 	return nil
 }
 
 func (l *Lexer) addToken(tokenType TokenType) Token {
-	ch := l.line[l.start : l.curr+1]
+	ch := l.line[l.start:l.curr]
 	token := Token{
 		Type:    tokenType,
 		Literal: ch,
@@ -118,7 +133,7 @@ func (l *Lexer) addToken(tokenType TokenType) Token {
 }
 
 func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) Token {
-	ch := l.line[l.start : l.curr+1]
+	ch := l.line[l.start:l.curr]
 	token := Token{
 		Type:    tokenType,
 		Literal: literal,
@@ -141,7 +156,7 @@ func (l *Lexer) handleNumber() (Token, error) {
 			l.advance()
 		}
 	}
-	literal, _ := Number(l.line[l.start : l.curr+1]) // todo: handle error
+	literal, _ := Number(l.line[l.start:l.curr]) // todo: handle error
 	return l.addTokenWithLiteral(NUMBER, literal), nil
 }
 
@@ -156,21 +171,33 @@ func (l *Lexer) handleString() Token {
 		}
 	}
 	l.advance() // Skips the closing `"`
-	return l.addTokenWithLiteral(STRING, l.line[l.start+1:l.curr])
+	return l.addTokenWithLiteral(STRING, l.line[l.start+1:l.curr-1])
 }
 
-func (l *Lexer) advance() {
+func (l *Lexer) advance() byte {
+	c := l.line[l.curr]
 	l.curr += 1
+	return c
 }
 
 func (l *Lexer) match(next byte) (matches bool) {
-	ch := l.peek()
-	return ch == next
+	if l.atEnd() {
+		return false
+	}
+	if l.line[l.curr] != next {
+		return false
+	}
+	l.curr += 1
+	return true
 }
 
 func (l *Lexer) peek() (next byte) {
-	if l.curr+1 >= int64(len(l.line)) {
+	if l.atEnd() {
 		return 0
 	}
-	return l.line[l.curr+1]
+	return l.line[l.curr]
+}
+
+func (l *Lexer) atEnd() bool {
+	return l.curr >= int64(len(l.line))
 }
