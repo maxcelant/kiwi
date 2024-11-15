@@ -40,7 +40,7 @@ var _ = Describe("Lexer", func() {
 		})
 		When("its a multiple whitespaces", func() {
 			It("should return an empty list of tokens", func() {
-				in := " "
+				in := "   "
 				result, _ := lexer.ScanLine(in)
 				Expect(result).To(Equal([]Token{eofToken}))
 			})
