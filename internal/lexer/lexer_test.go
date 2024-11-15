@@ -405,5 +405,58 @@ var _ = Describe("Lexer", func() {
 				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
 		})
+
+		When("given a var keyword and an identifier", func() {
+			It("returns a list with both tokens", func() {
+				in := "var foo"
+				result, _ := lexer.ScanLine(in)
+				token1 := Token{
+					Type:    VAR,
+					Literal: "var",
+					Lexeme:  "var",
+					Line:    1,
+				}
+				token2 := Token{
+					Type:    IDENTIFIER,
+					Literal: "foo",
+					Lexeme:  "foo",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{token1, token2, eofToken}))
+			})
+		})
+
+		When("given a full variable declaration", func() {
+			It("returns a list with both tokens", func() {
+				in := "var foo = 3"
+				result, _ := lexer.ScanLine(in)
+				Expect(result).To(Equal([]Token{
+					{
+						Type:    VAR,
+						Literal: "var",
+						Lexeme:  "var",
+						Line:    1,
+					},
+					{
+						Type:    IDENTIFIER,
+						Literal: "foo",
+						Lexeme:  "foo",
+						Line:    1,
+					},
+					{
+						Type:    EQUAL,
+						Literal: "=",
+						Lexeme:  "=",
+						Line:    1,
+					},
+					{
+						Type:    NUMBER,
+						Literal: 3,
+						Lexeme:  "3",
+						Line:    1,
+					},
+					eofToken}))
+			})
+		})
 	})
 })

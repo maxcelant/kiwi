@@ -2,7 +2,6 @@ package lexer
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 )
 
@@ -55,7 +54,6 @@ func (l *Lexer) scanToken() error {
 	ch := l.advance()
 
 	if ch == ' ' || ch == '\r' || ch == '\t' {
-		fmt.Println("space..")
 		return nil
 	} else if ch == ';' {
 		token = l.addToken(SEMICOLON)
