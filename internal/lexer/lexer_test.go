@@ -358,7 +358,7 @@ var _ = Describe("Lexer", func() {
 
 	Context("variables", func() {
 		When("given a 3 letter identifier", func() {
-			FIt("returns a list with a identifier token", func() {
+			It("returns a list with a identifier token", func() {
 				in := "foo"
 				result, _ := lexer.ScanLine(in)
 				expected := Token{
