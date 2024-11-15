@@ -356,7 +356,42 @@ var _ = Describe("Lexer", func() {
 		})
 	})
 
-	Context("variables", func() {
+	Context("keywords", func() {
+		When("given a single keyword", func() {
+			It("returns a list with a single keyword", func() {
+				in := "var"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    VAR,
+					Literal: "var",
+					Lexeme:  "var",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+		When("given a multiple keyword", func() {
+			It("returns a list with a keywords", func() {
+				in := "true false"
+				result, _ := lexer.ScanLine(in)
+				token1 := Token{
+					Type:    TRUE,
+					Literal: "true",
+					Lexeme:  "true",
+					Line:    1,
+				}
+				token2 := Token{
+					Type:    FALSE,
+					Literal: "false",
+					Lexeme:  "false",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{token1, token2, eofToken}))
+			})
+		})
+	})
+
+	Context("identifiers", func() {
 		When("given a 3 letter identifier", func() {
 			It("returns a list with a identifier token", func() {
 				in := "foo"

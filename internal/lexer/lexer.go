@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -12,6 +13,19 @@ type Lexer struct {
 	currLine int64
 	tokens   []Token
 	line     string
+}
+
+var keywords = map[string]TokenType{
+	"if":     IF,
+	"else":   ELSE,
+	"for":    FOR,
+	"while":  WHILE,
+	"return": RETURN,
+	"func":   FUNC,
+	"var":    VAR,
+	"true":   TRUE,
+	"false":  FALSE,
+	"nil":    NIL,
 }
 
 func (l *Lexer) ScanLine(line string) ([]Token, error) {
@@ -41,6 +55,7 @@ func (l *Lexer) scanToken() error {
 	ch := l.advance()
 
 	if ch == ' ' || ch == '\r' || ch == '\t' {
+		fmt.Println("space..")
 		return nil
 	} else if ch == ';' {
 		token = l.addToken(SEMICOLON)
@@ -107,16 +122,7 @@ func (l *Lexer) scanToken() error {
 			return err
 		}
 	} else if isAlpha(ch) {
-		for {
-			next := l.peek()
-			if next == 0 {
-				break
-			}
-			if isAlpha(next) {
-				l.advance()
-			}
-		}
-		token = l.addToken(IDENTIFIER)
+		token = l.handleIdentifier()
 	}
 	l.tokens = append(l.tokens, token)
 	return nil
@@ -142,6 +148,24 @@ func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) To
 		Line:    l.currLine,
 	}
 	return token
+}
+
+func (l *Lexer) handleIdentifier() Token {
+	for {
+		next := l.peek()
+		if next == 0 || next == ' ' {
+			break
+		}
+		if isAlpha(next) {
+			l.advance()
+		}
+	}
+	k := l.line[l.start:l.curr]
+	tokenType, ok := keywords[k]
+	if !ok {
+		tokenType = IDENTIFIER
+	}
+	return l.addToken(tokenType)
 }
 
 func (l *Lexer) handleNumber() (Token, error) {
