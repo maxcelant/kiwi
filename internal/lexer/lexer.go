@@ -106,6 +106,17 @@ func (l *Lexer) scanToken() error {
 		if err != nil {
 			return err
 		}
+	} else if isAlpha(ch) {
+		for {
+			next := l.peek()
+			if next == 0 {
+				break
+			}
+			if isAlpha(next) {
+				l.advance()
+			}
+		}
+		token = l.addToken(IDENTIFIER)
 	}
 	l.tokens = append(l.tokens, token)
 	return nil
