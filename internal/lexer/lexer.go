@@ -68,6 +68,12 @@ func (l *Lexer) scanToken() error {
 		token = l.addToken(LEFT_PAREN)
 	} else if ch == ')' {
 		token = l.addToken(RIGHT_PAREN)
+	} else if ch == '+' {
+		token = l.addToken(PLUS)
+	} else if ch == '-' {
+		token = l.addToken(MINUS)
+	} else if ch == '*' {
+		token = l.addToken(STAR)
 	} else if ch == '!' {
 		next := l.match('=')
 		if next {

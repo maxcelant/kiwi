@@ -270,6 +270,48 @@ var _ = Describe("Lexer", func() {
 				Expect(result).To(Equal([]Token{expected, eofToken}))
 			})
 		})
+
+		When("entering a plus", func() {
+			It("should return a list with a plus token", func() {
+				in := "+"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    PLUS,
+					Literal: "+",
+					Lexeme:  "+",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+
+		When("entering a minus", func() {
+			It("should return a list with a minus token", func() {
+				in := "-"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    MINUS,
+					Literal: "-",
+					Lexeme:  "-",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
+
+		When("entering a star", func() {
+			It("should return a list with a star token", func() {
+				in := "*"
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    STAR,
+					Literal: "*",
+					Lexeme:  "*",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected, eofToken}))
+			})
+		})
 	})
 
 	Context("multiple tokens", func() {
