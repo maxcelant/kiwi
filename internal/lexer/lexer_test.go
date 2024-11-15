@@ -165,6 +165,26 @@ var _ = Describe("Lexer", func() {
 			})
 		})
 
+		When("its a multi-digit char token attached to a non-digit", func() {
+			It("should return a list with two tokens", func() {
+				in := "123;"
+				result, _ := lexer.ScanLine(in)
+				token1 := Token{
+					Type:    NUMBER,
+					Literal: 123,
+					Lexeme:  "123",
+					Line:    1,
+				}
+				token2 := Token{
+					Type:    SEMICOLON,
+					Literal: ";",
+					Lexeme:  ";",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{token1, token2, eofToken}))
+			})
+		})
+
 		When("its a digit with alpha characters in it", func() {
 			It("should return an error", func() {
 				in := "123abc"

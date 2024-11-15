@@ -183,7 +183,7 @@ func (l *Lexer) handleNumber() (Token, error) {
 		if isAlpha(next) {
 			return Token{}, errors.New("invalid number: contains alphabetic characters")
 		}
-		if next == 0 || next == ' ' {
+		if next == 0 || next == ' ' || !isNumber(next) {
 			break
 		}
 		if isNumber(next) {
