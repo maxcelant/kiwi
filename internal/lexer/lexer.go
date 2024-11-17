@@ -27,14 +27,26 @@ var keywords = map[string]TokenType{
 	"nil":    NIL,
 }
 
-func New() *Lexer {
+func New(source string) *Lexer {
 	return &Lexer{
+		source: source,
 		Line:   0,
 		start:  0,
 		curr:   0,
 		tokens: []Token{},
-		source: "",
 	}
+}
+
+func (l *Lexer) Scan() ([]Token, error) {
+	for !l.atEnd() {
+		l.start = l.curr
+		err := l.scanToken()
+		if err != nil {
+			return nil, err
+		}
+	}
+	l.tokens = append(l.tokens, Token{Type: EOF, Lexeme: "", Literal: nil, Line: l.Line})
+	return l.tokens, nil
 }
 
 func (l *Lexer) ScanLine(source string) ([]Token, error) {
@@ -64,6 +76,8 @@ func (l *Lexer) scanToken() error {
 
 	if ch == ' ' || ch == '\r' || ch == '\t' {
 		return nil
+	} else if ch == '\n' {
+		l.Line += 1
 	} else if ch == ';' {
 		token = l.addToken(SEMICOLON)
 	} else if ch == '{' {
