@@ -6,7 +6,6 @@ import (
 )
 
 type Lexer struct {
-	// globalPos int64
 	Line   int64
 	start  int64
 	curr   int64
