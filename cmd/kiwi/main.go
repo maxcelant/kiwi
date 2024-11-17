@@ -32,6 +32,7 @@ func run() error {
 		tokens = append(tokens, lineTokens...)
 	}
 
+	tokens = append(tokens, lexer.Token{Type: lexer.EOF, Lexeme: "", Literal: nil, Line: lxr.Line})
 	fmt.Println(tokens)
 
 	if err := scanner.Err(); err != nil {

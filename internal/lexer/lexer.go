@@ -7,11 +7,11 @@ import (
 
 type Lexer struct {
 	// globalPos int64
-	start    int64
-	curr     int64
-	currLine int64
-	tokens   []Token
-	line     string
+	Line   int64
+	start  int64
+	curr   int64
+	tokens []Token
+	source string
 }
 
 var keywords = map[string]TokenType{
@@ -30,23 +30,23 @@ var keywords = map[string]TokenType{
 
 func New() *Lexer {
 	return &Lexer{
-		start:    0,
-		curr:     0,
-		currLine: 0,
-		tokens:   []Token{},
-		line:     "",
+		Line:   0,
+		start:  0,
+		curr:   0,
+		tokens: []Token{},
+		source: "",
 	}
 }
 
-func (l *Lexer) ScanLine(line string) ([]Token, error) {
-	l.line = line
-	l.currLine += 1
+func (l *Lexer) ScanLine(source string) ([]Token, error) {
+	l.Line += 1
+	l.source = source
 	l.curr = 0
 	l.tokens = []Token{}
 
 	for {
 		l.start = l.curr
-		if l.curr >= int64(len(line)) {
+		if l.curr >= int64(len(source)) {
 			break
 		}
 		err := l.scanToken()
@@ -55,7 +55,6 @@ func (l *Lexer) ScanLine(line string) ([]Token, error) {
 		}
 	}
 
-	// l.tokens = append(l.tokens, Token{Type: EOF, Lexeme: "", Literal: nil, Line: l.currLine})
 	return l.tokens, nil
 }
 
@@ -138,23 +137,23 @@ func (l *Lexer) scanToken() error {
 }
 
 func (l *Lexer) addToken(tokenType TokenType) Token {
-	ch := l.line[l.start:l.curr]
+	ch := l.source[l.start:l.curr]
 	token := Token{
 		Type:    tokenType,
 		Literal: ch,
 		Lexeme:  ch,
-		Line:    l.currLine,
+		Line:    l.Line,
 	}
 	return token
 }
 
 func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) Token {
-	ch := l.line[l.start:l.curr]
+	ch := l.source[l.start:l.curr]
 	token := Token{
 		Type:    tokenType,
 		Literal: literal,
 		Lexeme:  ch,
-		Line:    l.currLine,
+		Line:    l.Line,
 	}
 	return token
 }
@@ -169,7 +168,7 @@ func (l *Lexer) handleIdentifier() Token {
 			l.advance()
 		}
 	}
-	k := l.line[l.start:l.curr]
+	k := l.source[l.start:l.curr]
 	tokenType, ok := keywords[k]
 	if !ok {
 		tokenType = IDENTIFIER
@@ -190,7 +189,7 @@ func (l *Lexer) handleNumber() (Token, error) {
 			l.advance()
 		}
 	}
-	literal, _ := Number(l.line[l.start:l.curr]) // todo: handle error
+	literal, _ := Number(l.source[l.start:l.curr]) // todo: handle error
 	return l.addTokenWithLiteral(NUMBER, literal), nil
 }
 
@@ -205,11 +204,11 @@ func (l *Lexer) handleString() Token {
 		}
 	}
 	l.advance() // Skips the closing `"`
-	return l.addTokenWithLiteral(STRING, l.line[l.start+1:l.curr-1])
+	return l.addTokenWithLiteral(STRING, l.source[l.start+1:l.curr-1])
 }
 
 func (l *Lexer) advance() byte {
-	c := l.line[l.curr]
+	c := l.source[l.curr]
 	l.curr += 1
 	return c
 }
@@ -218,7 +217,7 @@ func (l *Lexer) match(next byte) (matches bool) {
 	if l.atEnd() {
 		return false
 	}
-	if l.line[l.curr] != next {
+	if l.source[l.curr] != next {
 		return false
 	}
 	l.curr += 1
@@ -229,11 +228,11 @@ func (l *Lexer) peek() (next byte) {
 	if l.atEnd() {
 		return 0
 	}
-	return l.line[l.curr]
+	return l.source[l.curr]
 }
 
 func (l *Lexer) atEnd() bool {
-	return l.curr >= int64(len(l.line))
+	return l.curr >= int64(len(l.source))
 }
 
 func isAlphaNumeric(b byte) bool {
