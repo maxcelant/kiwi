@@ -70,7 +70,6 @@ func (l *Lexer) ScanLine(source string) ([]Token, error) {
 }
 
 func (l *Lexer) scanToken() error {
-	var token Token
 	var err error
 	ch := l.advance()
 
@@ -79,48 +78,48 @@ func (l *Lexer) scanToken() error {
 	} else if ch == '\n' {
 		l.Line += 1
 	} else if ch == ';' {
-		token = l.addToken(SEMICOLON)
+		l.addToken(SEMICOLON)
 	} else if ch == '{' {
-		token = l.addToken(LEFT_BRACE)
+		l.addToken(LEFT_BRACE)
 	} else if ch == '}' {
-		token = l.addToken(RIGHT_BRACE)
+		l.addToken(RIGHT_BRACE)
 	} else if ch == '(' {
-		token = l.addToken(LEFT_PAREN)
+		l.addToken(LEFT_PAREN)
 	} else if ch == ')' {
-		token = l.addToken(RIGHT_PAREN)
+		l.addToken(RIGHT_PAREN)
 	} else if ch == '+' {
-		token = l.addToken(PLUS)
+		l.addToken(PLUS)
 	} else if ch == '-' {
-		token = l.addToken(MINUS)
+		l.addToken(MINUS)
 	} else if ch == '*' {
-		token = l.addToken(STAR)
+		l.addToken(STAR)
 	} else if ch == '!' {
 		next := l.match('=')
 		if next {
-			token = l.addToken(BANG_EQ)
+			l.addToken(BANG_EQ)
 		} else {
-			token = l.addToken(BANG)
+			l.addToken(BANG)
 		}
 	} else if ch == '<' {
 		next := l.match('=')
 		if next {
-			token = l.addToken(LESS_EQ)
+			l.addToken(LESS_EQ)
 		} else {
-			token = l.addToken(LESS)
+			l.addToken(LESS)
 		}
 	} else if ch == '>' {
 		next := l.match('=')
 		if next {
-			token = l.addToken(GREATER_EQ)
+			l.addToken(GREATER_EQ)
 		} else {
-			token = l.addToken(GREATER)
+			l.addToken(GREATER)
 		}
 	} else if ch == '=' {
 		next := l.match('=')
 		if next {
-			token = l.addToken(EQUAL_EQUAL)
+			l.addToken(EQUAL_EQUAL)
 		} else {
-			token = l.addToken(EQUAL)
+			l.addToken(EQUAL)
 		}
 	} else if ch == '/' {
 		next := l.match('/')
@@ -133,23 +132,22 @@ func (l *Lexer) scanToken() error {
 			}
 			return nil
 		} else {
-			token = l.addToken(SLASH)
+			l.addToken(SLASH)
 		}
 	} else if ch == '"' {
-		token = l.handleString()
+		l.handleString()
 	} else if isNumber(ch) {
-		token, err = l.handleNumber()
+		err = l.handleNumber()
 		if err != nil {
 			return err
 		}
 	} else if isAlpha(ch) {
-		token = l.handleIdentifier()
+		l.handleIdentifier()
 	}
-	l.tokens = append(l.tokens, token)
 	return nil
 }
 
-func (l *Lexer) addToken(tokenType TokenType) Token {
+func (l *Lexer) addToken(tokenType TokenType) {
 	ch := l.source[l.start:l.curr]
 	token := Token{
 		Type:    tokenType,
@@ -157,10 +155,10 @@ func (l *Lexer) addToken(tokenType TokenType) Token {
 		Lexeme:  ch,
 		Line:    l.Line,
 	}
-	return token
+	l.tokens = append(l.tokens, token)
 }
 
-func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) Token {
+func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) {
 	ch := l.source[l.start:l.curr]
 	token := Token{
 		Type:    tokenType,
@@ -168,10 +166,10 @@ func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) To
 		Lexeme:  ch,
 		Line:    l.Line,
 	}
-	return token
+	l.tokens = append(l.tokens, token)
 }
 
-func (l *Lexer) handleIdentifier() Token {
+func (l *Lexer) handleIdentifier() {
 	for {
 		next := l.peek()
 		if next == 0 || next == ' ' {
@@ -186,14 +184,14 @@ func (l *Lexer) handleIdentifier() Token {
 	if !ok {
 		tokenType = IDENTIFIER
 	}
-	return l.addToken(tokenType)
+	l.addToken(tokenType)
 }
 
-func (l *Lexer) handleNumber() (Token, error) {
+func (l *Lexer) handleNumber() error {
 	for {
 		next := l.peek()
 		if isAlpha(next) {
-			return Token{}, errors.New("invalid number: contains alphabetic characters")
+			return errors.New("invalid number: contains alphabetic characters")
 		}
 		if next == 0 || next == ' ' || !isNumber(next) {
 			break
@@ -203,10 +201,11 @@ func (l *Lexer) handleNumber() (Token, error) {
 		}
 	}
 	literal, _ := Number(l.source[l.start:l.curr]) // todo: handle error
-	return l.addTokenWithLiteral(NUMBER, literal), nil
+	l.addTokenWithLiteral(NUMBER, literal)
+	return nil
 }
 
-func (l *Lexer) handleString() Token {
+func (l *Lexer) handleString() {
 	for {
 		next := l.peek()
 		if next == 0 || next == '"' || !isAlphaNumeric(next) {
@@ -217,7 +216,7 @@ func (l *Lexer) handleString() Token {
 		}
 	}
 	l.advance() // Skips the closing `"`
-	return l.addTokenWithLiteral(STRING, l.source[l.start+1:l.curr-1])
+	l.addTokenWithLiteral(STRING, l.source[l.start+1:l.curr-1])
 }
 
 func (l *Lexer) advance() byte {
