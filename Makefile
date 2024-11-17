@@ -2,8 +2,9 @@
 build:
 	go build -o kiwi cmd/kiwi/main.go
 
+.PHONY: run
 run: build
-	go ./kiwi
+	./kiwi
 
 clean:
 	rm -f kiwi

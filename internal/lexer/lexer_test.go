@@ -15,18 +15,16 @@ func TestLexer(t *testing.T) {
 
 var _ = Describe("Lexer", func() {
 	var lexer Lexer
-	var eofToken Token
 
 	BeforeEach(func() {
 		lexer = Lexer{}
-		eofToken = Token{Type: EOF, Lexeme: "", Literal: nil, Line: 1}
 	})
 
 	Context("empty", func() {
 		It("should return an empty list of tokens", func() {
 			in := ""
 			result, _ := lexer.ScanLine(in)
-			Expect(result).To(Equal([]Token{eofToken}))
+			Expect(result).To(Equal([]Token{}))
 		})
 	})
 
@@ -35,14 +33,14 @@ var _ = Describe("Lexer", func() {
 			It("should return an empty list of tokens", func() {
 				in := " "
 				result, _ := lexer.ScanLine(in)
-				Expect(result).To(Equal([]Token{eofToken}))
+				Expect(result).To(Equal([]Token{}))
 			})
 		})
 		When("its a multiple whitespaces", func() {
 			It("should return an empty list of tokens", func() {
 				in := "   "
 				result, _ := lexer.ScanLine(in)
-				Expect(result).To(Equal([]Token{eofToken}))
+				Expect(result).To(Equal([]Token{}))
 			})
 		})
 	})
@@ -57,7 +55,7 @@ var _ = Describe("Lexer", func() {
 				Lexeme:  ";",
 				Line:    1,
 			}
-			Expect(result).To(Equal([]Token{expected, eofToken}))
+			Expect(result).To(Equal([]Token{expected}))
 		})
 
 		When("there is a single and multi-char version", func() {
@@ -70,7 +68,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "=",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 	})
@@ -80,14 +78,14 @@ var _ = Describe("Lexer", func() {
 			It("should return an empty list", func() {
 				in := "// this is a comment"
 				result, _ := lexer.ScanLine(in)
-				Expect(result).To(Equal([]Token{eofToken}))
+				Expect(result).To(Equal([]Token{}))
 			})
 		})
 		When("entering double slashes with newline", func() {
 			It("should return an empty list", func() {
 				in := "// this is a comment\n"
 				result, _ := lexer.ScanLine(in)
-				Expect(result).To(Equal([]Token{eofToken}))
+				Expect(result).To(Equal([]Token{}))
 			})
 		})
 	})
@@ -103,7 +101,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "\"foobar\"",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -117,7 +115,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "\"123\"",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -131,7 +129,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "\"foobar123\"",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 	})
@@ -147,7 +145,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "1",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -161,7 +159,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "123",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -181,7 +179,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  ";",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{token1, token2, eofToken}))
+				Expect(result).To(Equal([]Token{token1, token2}))
 			})
 		})
 
@@ -205,7 +203,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "==",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 
 			It("should return a list with just a not-equal token", func() {
@@ -217,7 +215,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "!=",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -231,7 +229,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "<",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 
 			It("should return a list with just a less-than-or-equal token", func() {
@@ -243,7 +241,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "<=",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -257,7 +255,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  ">",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 
 			It("should return a list with just a greater-than-or-equal token", func() {
@@ -269,7 +267,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  ">=",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 	})
@@ -285,7 +283,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "{",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -299,7 +297,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "(",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 	})
@@ -315,7 +313,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "/",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -329,7 +327,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "+",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -343,7 +341,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "-",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -357,7 +355,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "*",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 	})
@@ -379,7 +377,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  ";",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{exp1, exp2, eofToken}))
+				Expect(result).To(Equal([]Token{exp1, exp2}))
 			})
 		})
 
@@ -399,7 +397,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "\"bar\"",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{exp1, exp2, eofToken}))
+				Expect(result).To(Equal([]Token{exp1, exp2}))
 			})
 		})
 	})
@@ -415,7 +413,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "var",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 		When("given a multiple keyword", func() {
@@ -434,7 +432,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "false",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{token1, token2, eofToken}))
+				Expect(result).To(Equal([]Token{token1, token2}))
 			})
 		})
 	})
@@ -450,7 +448,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "foo",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{expected, eofToken}))
+				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
 
@@ -470,7 +468,7 @@ var _ = Describe("Lexer", func() {
 					Lexeme:  "foo",
 					Line:    1,
 				}
-				Expect(result).To(Equal([]Token{token1, token2, eofToken}))
+				Expect(result).To(Equal([]Token{token1, token2}))
 			})
 		})
 
@@ -503,7 +501,7 @@ var _ = Describe("Lexer", func() {
 						Lexeme:  "3",
 						Line:    1,
 					},
-					eofToken}))
+				}))
 			})
 		})
 	})

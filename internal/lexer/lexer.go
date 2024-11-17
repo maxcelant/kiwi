@@ -55,7 +55,7 @@ func (l *Lexer) ScanLine(line string) ([]Token, error) {
 		}
 	}
 
-	l.tokens = append(l.tokens, Token{Type: EOF, Lexeme: "", Literal: nil, Line: l.currLine})
+	// l.tokens = append(l.tokens, Token{Type: EOF, Lexeme: "", Literal: nil, Line: l.currLine})
 	return l.tokens, nil
 }
 
