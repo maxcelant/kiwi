@@ -171,7 +171,7 @@ func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) {
 func (l *Lexer) handleIdentifier() {
 	for {
 		next := l.peek()
-		if next == 0 || next == ' ' {
+		if next == 0 || next == ' ' || !isAlphaNumeric(next) {
 			break
 		}
 		if isAlpha(next) {

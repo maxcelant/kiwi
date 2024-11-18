@@ -132,6 +132,7 @@ var _ = Describe("Lexer", func() {
 				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
+
 	})
 
 	Context("numbers", func() {
@@ -435,6 +436,20 @@ var _ = Describe("Lexer", func() {
 				Expect(result).To(Equal([]Token{token1, token2}))
 			})
 		})
+
+		When("given a the func keyword", func() {
+			It("returns a token list with func keyword", func() {
+				in := "fn"
+				result, _ := lexer.ScanLine(in)
+				token := Token{
+					Type:    FUNC,
+					Literal: "fn",
+					Lexeme:  "fn",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{token}))
+			})
+		})
 	})
 
 	Context("identifiers", func() {
@@ -502,6 +517,26 @@ var _ = Describe("Lexer", func() {
 						Line:    1,
 					},
 				}))
+			})
+		})
+
+		When("its an identifier with a parenthesis attached", func() {
+			It("should return a list with just a identifier and a parenthesis", func() {
+				in := "foo("
+				result, _ := lexer.ScanLine(in)
+				token1 := Token{
+					Type:    IDENTIFIER,
+					Literal: "foo",
+					Lexeme:  "foo",
+					Line:    1,
+				}
+				token2 := Token{
+					Type:    LEFT_PAREN,
+					Literal: "(",
+					Lexeme:  "(",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{token1, token2}))
 			})
 		})
 	})
