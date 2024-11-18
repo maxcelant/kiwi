@@ -137,8 +137,7 @@ func (l *Lexer) scanToken() error {
 	} else if ch == '"' {
 		l.handleString()
 	} else if isNumber(ch) {
-		err = l.handleNumber()
-		if err != nil {
+		if err = l.handleNumber(); err != nil {
 			return err
 		}
 	} else if isAlpha(ch) {
