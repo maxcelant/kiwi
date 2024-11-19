@@ -22,7 +22,7 @@ var _ = Describe("Parser", func() {
 				parser := New(tokens)
 				actual, err := parser.parse()
 				Expect(err).To(BeNil())
-				Expect(actual).To(Equal())
+				Expect(actual).To(BeNil())
 			})
 		})
 	})

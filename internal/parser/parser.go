@@ -12,7 +12,7 @@ type Parser struct {
 }
 
 func New(tokens []lexer.Token) *Parser {
-	return &Parser{tokens: tokens, current: 0}
+	return &Parser{tokens, 0}
 }
 
 func (p *Parser) parse() (Expr, error) {
@@ -24,7 +24,47 @@ func (p *Parser) parse() (Expr, error) {
 }
 
 func (p *Parser) expression() (Expr, error) {
+	return p.equality()
+}
 
+func (p *Parser) equality() (Expr, error) {
+	expr := p.comparison()
+
+}
+
+func (p *Parser) comparison() (Expr, error) {
+
+}
+
+func (p *Parser) term() (Expr, error) {
+
+}
+
+func (p *Parser) factor() (Expr, error) {
+
+}
+
+func (p *Parser) unary() (Expr, error) {
+
+}
+
+func (p *Parser) primary() (Expr, error) {
+
+}
+
+func (p *Parser) advance() lexer.Token {
+	if !p.isAtEnd() {
+		p.current += 1
+	}
+	return p.prev()
+}
+
+func (p *Parser) peek() lexer.Token {
+	return p.tokens[p.current]
+}
+
+func (p *Parser) prev() lexer.Token {
+	return p.tokens[p.current-1]
 }
 
 func (p *Parser) isAtEnd() bool {
