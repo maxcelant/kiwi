@@ -40,7 +40,37 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Primary{value: "nil"}))
+					Expect(actual).To(Equal(&Primary{value: nil}))
+				})
+			})
+
+			When("its a list of just one true token", func() {
+				It("returns a tree with just one primary type node", func() {
+					tokens := []lexer.Token{{
+						Type:    lexer.TRUE,
+						Literal: "true",
+						Lexeme:  "true",
+						Line:    1,
+					}}
+					parser := New(tokens)
+					actual, err := parser.parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Primary{value: true}))
+				})
+			})
+
+			When("its a list of just one false token", func() {
+				It("returns a tree with just one primary type node", func() {
+					tokens := []lexer.Token{{
+						Type:    lexer.FALSE,
+						Literal: "false",
+						Lexeme:  "false",
+						Line:    1,
+					}}
+					parser := New(tokens)
+					actual, err := parser.parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Primary{value: false}))
 				})
 			})
 		})
