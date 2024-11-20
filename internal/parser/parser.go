@@ -65,6 +65,13 @@ func (p *Parser) primary() (Expr, error) {
 	if p.match(lexer.NIL) {
 		return &Primary{value: nil}, nil
 	}
+	if p.match(lexer.STRING) {
+		return &Primary{value: p.prev().Literal}, nil
+	}
+	if p.match(lexer.NUMBER) {
+		return &Primary{value: p.prev().Literal}, nil
+	}
+
 	return nil, fmt.Errorf("%s expected expression", p.peek().Lexeme)
 }
 

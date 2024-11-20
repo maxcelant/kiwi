@@ -73,6 +73,36 @@ var _ = Describe("Parser", func() {
 					Expect(actual).To(Equal(&Primary{value: false}))
 				})
 			})
+
+			When("its a list of just one string token", func() {
+				It("returns a tree with just one primary type node", func() {
+					tokens := []lexer.Token{{
+						Type:    lexer.STRING,
+						Literal: "foo",
+						Lexeme:  "\"foo\"",
+						Line:    1,
+					}}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Primary{value: "foo"}))
+				})
+			})
+
+			When("its a list of just one number token", func() {
+				It("returns a tree with just one primary type node", func() {
+					tokens := []lexer.Token{{
+						Type:    lexer.NUMBER,
+						Literal: 5,
+						Lexeme:  "5",
+						Line:    1,
+					}}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Primary{value: 5}))
+				})
+			})
 		})
 	})
 })
