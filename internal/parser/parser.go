@@ -15,7 +15,7 @@ func New(tokens []lexer.Token) *Parser {
 	return &Parser{tokens, 0}
 }
 
-func (p *Parser) parse() (Expr, error) {
+func (p *Parser) Parse() (Expr, error) {
 	if len(p.tokens) == 0 {
 		return nil, nil
 	}

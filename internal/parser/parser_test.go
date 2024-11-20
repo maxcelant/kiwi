@@ -20,7 +20,7 @@ var _ = Describe("Parser", func() {
 			It("returns an empty parse tree", func() {
 				tokens := []lexer.Token{}
 				parser := New(tokens)
-				actual, err := parser.parse()
+				actual, err := parser.Parse()
 				Expect(err).To(BeNil())
 				Expect(actual).To(BeNil())
 			})
@@ -38,7 +38,7 @@ var _ = Describe("Parser", func() {
 						Line:    1,
 					}}
 					parser := New(tokens)
-					actual, err := parser.parse()
+					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
 					Expect(actual).To(Equal(&Primary{value: nil}))
 				})
@@ -53,7 +53,7 @@ var _ = Describe("Parser", func() {
 						Line:    1,
 					}}
 					parser := New(tokens)
-					actual, err := parser.parse()
+					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
 					Expect(actual).To(Equal(&Primary{value: true}))
 				})
@@ -68,7 +68,7 @@ var _ = Describe("Parser", func() {
 						Line:    1,
 					}}
 					parser := New(tokens)
-					actual, err := parser.parse()
+					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
 					Expect(actual).To(Equal(&Primary{value: false}))
 				})

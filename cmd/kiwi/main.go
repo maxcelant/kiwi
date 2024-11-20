@@ -6,9 +6,11 @@ import (
 	"os"
 
 	"github.com/maxcelant/kiwi/internal/lexer"
+	"github.com/maxcelant/kiwi/internal/parser"
 )
 
 var lxr *lexer.Lexer
+var psr *parser.Parser
 
 // todo: fix me
 // func runREPL() error {
@@ -41,7 +43,7 @@ var lxr *lexer.Lexer
 // 	return nil
 // }
 
-func runFile() error {
+func run() error {
 	content, err := os.ReadFile("test/sample.kiwi")
 	if err != nil {
 		return fmt.Errorf("error reading file: %w", err)
@@ -53,13 +55,19 @@ func runFile() error {
 		return fmt.Errorf("syntax error occurred: %w", err)
 	}
 
-	fmt.Println(tokens)
+	psr = parser.New(tokens)
+	expr, err := psr.Parse()
+	if err != nil {
+		return fmt.Errorf("parse error occurred: %w", err)
+	}
+
+	fmt.Println(expr)
 
 	return nil
 }
 
 func main() {
-	if err := runFile(); err != nil {
+	if err := run(); err != nil {
 		log.Fatal(err)
 	}
 	// if err := runREPL(); err != nil {
