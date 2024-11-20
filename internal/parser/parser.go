@@ -16,6 +16,9 @@ func New(tokens []lexer.Token) *Parser {
 }
 
 func (p *Parser) parse() (Expr, error) {
+	if len(p.tokens) == 0 {
+		return nil, nil
+	}
 	expr, err := p.expression()
 	if err != nil {
 		return nil, fmt.Errorf("parsing error occurred: %w", err)
@@ -28,28 +31,58 @@ func (p *Parser) expression() (Expr, error) {
 }
 
 func (p *Parser) equality() (Expr, error) {
-	expr := p.comparison()
-
+	expr, err := p.comparison()
+	return expr, err
 }
 
 func (p *Parser) comparison() (Expr, error) {
-
+	expr, err := p.term()
+	return expr, err
 }
 
 func (p *Parser) term() (Expr, error) {
-
+	expr, err := p.factor()
+	return expr, err
 }
 
 func (p *Parser) factor() (Expr, error) {
-
+	expr, err := p.unary()
+	return expr, err
 }
 
 func (p *Parser) unary() (Expr, error) {
-
+	expr, err := p.primary()
+	return expr, err
 }
 
 func (p *Parser) primary() (Expr, error) {
+	if p.match(lexer.TRUE) {
+		return &Primary{value: true}, nil
+	}
+	if p.match(lexer.FALSE) {
+		return &Primary{value: false}, nil
+	}
+	if p.match(lexer.NIL) {
+		return &Primary{value: nil}, nil
+	}
+	return nil, fmt.Errorf("%s expected expression", p.peek().Lexeme)
+}
 
+func (p *Parser) match(matchers ...lexer.TokenType) bool {
+	for _, m := range matchers {
+		if p.check(m) {
+			p.advance()
+			return true
+		}
+	}
+	return false
+}
+
+func (p *Parser) check(tokenType lexer.TokenType) bool {
+	if p.isAtEnd() {
+		return false
+	}
+	return p.peek().Type == tokenType
 }
 
 func (p *Parser) advance() lexer.Token {
