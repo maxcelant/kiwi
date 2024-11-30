@@ -18,7 +18,7 @@ func New(expr parser.Expr) *Interpreter {
 
 func (it *Interpreter) Interpret() {
 	obj := it.Evaluate()
-	str, err := it.Stringify()
+	str, err := it.Stringify(obj)
 	if err != nil {
 		// handle error
 	}
@@ -29,22 +29,22 @@ func (it *Interpreter) Evaluate() any {
 	return it.expr.Accept(it)
 }
 
-func (it *Interpreter) VisitBinary(expr parser.Expr) parser.Expr {
+func (it *Interpreter) VisitBinary(expr parser.Expr) any {
 
 }
 
-func (it *Interpreter) VisitUnary(expr parser.Expr) parser.Expr {
+func (it *Interpreter) VisitUnary(expr parser.Expr) any {
 
 }
 
-func (it *Interpreter) VisitPrimary(expr parser.Expr) parser.Expr {
+func (it *Interpreter) VisitPrimary(expr parser.Expr) any {
 
 }
 
-func (it *Interpreter) VisitGrouping(expr parser.Expr) parser.Expr {
+func (it *Interpreter) VisitGrouping(expr parser.Expr) any {
 
 }
 
-func (it *Interpreter) Stringify() (string, error) {
+func (it *Interpreter) Stringify(obj any) (string, error) {
 
 }
