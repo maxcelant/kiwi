@@ -39,7 +39,7 @@ func (p *Parser) equality() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = &Binary{
+		expr = Binary{
 			right:    right,
 			operator: operator,
 			left:     expr,
@@ -58,7 +58,7 @@ func (p *Parser) comparison() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = &Binary{
+		expr = Binary{
 			right:    right,
 			operator: operator,
 			left:     expr,
@@ -77,7 +77,7 @@ func (p *Parser) term() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = &Binary{
+		expr = Binary{
 			right:    right,
 			operator: operator,
 			left:     expr,
@@ -96,7 +96,7 @@ func (p *Parser) factor() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = &Binary{
+		expr = Binary{
 			right:    right,
 			operator: operator,
 			left:     expr,
@@ -113,7 +113,7 @@ func (p *Parser) unary() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		return &Unary{
+		return Unary{
 			operator: operator,
 			right:    right,
 		}, nil
@@ -124,19 +124,19 @@ func (p *Parser) unary() (Expr, error) {
 
 func (p *Parser) primary() (Expr, error) {
 	if p.match(lexer.TRUE) {
-		return &Primary{value: true}, nil
+		return Primary{value: true}, nil
 	}
 	if p.match(lexer.FALSE) {
-		return &Primary{value: false}, nil
+		return Primary{value: false}, nil
 	}
 	if p.match(lexer.NIL) {
-		return &Primary{value: nil}, nil
+		return Primary{value: nil}, nil
 	}
 	if p.match(lexer.STRING) {
-		return &Primary{value: p.prev().Literal}, nil
+		return Primary{value: p.prev().Literal}, nil
 	}
 	if p.match(lexer.NUMBER) {
-		return &Primary{value: p.prev().Literal}, nil
+		return Primary{value: p.prev().Literal}, nil
 	}
 
 	return nil, fmt.Errorf("%s expected expression", p.peek().Lexeme)

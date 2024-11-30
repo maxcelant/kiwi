@@ -7,6 +7,6 @@ type Unary struct {
 	right    any
 }
 
-func (u *Unary) Accept(v Visitor) Expr {
+func (u Unary) Accept(v Visitor) Expr {
 	return v.VisitUnary(u)
 }

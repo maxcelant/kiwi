@@ -8,6 +8,6 @@ type Binary struct {
 	operator lexer.Token
 }
 
-func (b *Binary) Accept(v Visitor) Expr {
+func (b Binary) Accept(v Visitor) Expr {
 	return v.VisitFactor(b)
 }
