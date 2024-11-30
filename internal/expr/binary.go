@@ -1,4 +1,4 @@
-package parser
+package expr
 
 import "github.com/maxcelant/kiwi/internal/lexer"
 

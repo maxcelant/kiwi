@@ -3,6 +3,7 @@ package interpreter
 import (
 	"fmt"
 
+	"github.com/maxcelant/kiwi/internal/expr"
 	"github.com/maxcelant/kiwi/internal/parser"
 )
 
@@ -29,19 +30,23 @@ func (it *Interpreter) Evaluate() any {
 	return it.expr.Accept(it)
 }
 
-func (it *Interpreter) VisitBinary(expr parser.Expr) any {
+func (it *Interpreter) VisitBinary(expr expr.Expr) any {
 
 }
 
-func (it *Interpreter) VisitUnary(expr parser.Expr) any {
+func (it *Interpreter) VisitUnary(expr expr.Expr) any {
 
 }
 
-func (it *Interpreter) VisitPrimary(expr parser.Expr) any {
-
+func (it *Interpreter) VisitPrimary(expr expr.Expr) any {
+	primary, ok := expr.(*expr.Primary)
+	if !ok {
+		// handle error
+	}
+	return primary.Value
 }
 
-func (it *Interpreter) VisitGrouping(expr parser.Expr) any {
+func (it *Interpreter) VisitGrouping(expr expr.Expr) any {
 
 }
 

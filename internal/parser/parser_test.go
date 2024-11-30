@@ -3,6 +3,7 @@ package parser
 import (
 	"testing"
 
+	"github.com/maxcelant/kiwi/internal/expr"
 	"github.com/maxcelant/kiwi/internal/lexer"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -28,7 +29,7 @@ var _ = Describe("Parser", func() {
 	})
 
 	Describe("Expressions", func() {
-		Describe("Primary", func() {
+		Describe("expr.Primary", func() {
 			When("its a list of just one nil token", func() {
 				It("returns a tree with just one primary type node", func() {
 					tokens := []lexer.Token{
@@ -43,7 +44,7 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Primary{Value: nil}))
+					Expect(actual).To(Equal(expr.Primary{Value: nil}))
 				})
 			})
 
@@ -61,7 +62,7 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Primary{Value: true}))
+					Expect(actual).To(Equal(expr.Primary{Value: true}))
 				})
 			})
 
@@ -79,7 +80,7 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Primary{Value: false}))
+					Expect(actual).To(Equal(expr.Primary{Value: false}))
 				})
 			})
 
@@ -97,7 +98,7 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Primary{Value: "foo"}))
+					Expect(actual).To(Equal(expr.Primary{Value: "foo"}))
 				})
 			})
 
@@ -115,7 +116,7 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Primary{Value: 5}))
+					Expect(actual).To(Equal(expr.Primary{Value: 5}))
 				})
 			})
 
@@ -130,8 +131,8 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Grouping{
-						expr: Primary{Value: 1},
+					Expect(actual).To(Equal(expr.Grouping{
+						Expr: expr.Primary{Value: 1},
 					}))
 				})
 			})
@@ -152,7 +153,7 @@ var _ = Describe("Parser", func() {
 			})
 		})
 
-		Describe("Unary", func() {
+		Describe("expr.Unary", func() {
 			When("its a list with a negative and number", func() {
 				It("returns a tree with a unary node", func() {
 					tokens := []lexer.Token{
@@ -163,9 +164,9 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Unary{
-						operator: tokens[0],
-						right:    Primary{Value: 5},
+					Expect(actual).To(Equal(expr.Unary{
+						Operator: tokens[0],
+						Right:    expr.Primary{Value: 5},
 					}))
 				})
 			})
@@ -180,9 +181,9 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Unary{
-						operator: tokens[0],
-						right:    Primary{Value: 5},
+					Expect(actual).To(Equal(expr.Unary{
+						Operator: tokens[0],
+						Right:    expr.Primary{Value: 5},
 					}))
 				})
 			})
@@ -200,10 +201,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -219,10 +220,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -240,14 +241,14 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left: Binary{
-							left:     Primary{Value: 1},
-							operator: tokens[1],
-							right:    Primary{Value: 1},
+					Expect(actual).To(Equal(expr.Binary{
+						Left: expr.Binary{
+							Left:     expr.Primary{Value: 1},
+							Operator: tokens[1],
+							Right:    expr.Primary{Value: 1},
 						},
-						operator: tokens[3],
-						right:    Primary{Value: 1},
+						Operator: tokens[3],
+						Right:    expr.Primary{Value: 1},
 					}))
 				})
 			})
@@ -265,10 +266,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -284,10 +285,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -305,14 +306,14 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left: Binary{
-							left:     Primary{Value: 1},
-							operator: tokens[1],
-							right:    Primary{Value: 1},
+					Expect(actual).To(Equal(expr.Binary{
+						Left: expr.Binary{
+							Left:     expr.Primary{Value: 1},
+							Operator: tokens[1],
+							Right:    expr.Primary{Value: 1},
 						},
-						operator: tokens[3],
-						right:    Primary{Value: 1},
+						Operator: tokens[3],
+						Right:    expr.Primary{Value: 1},
 					}))
 				})
 			})
@@ -330,10 +331,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -349,10 +350,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -368,10 +369,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -387,10 +388,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -408,14 +409,14 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left: Binary{
-							left:     Primary{Value: 1},
-							operator: tokens[1],
-							right:    Primary{Value: 1},
+					Expect(actual).To(Equal(expr.Binary{
+						Left: expr.Binary{
+							Left:     expr.Primary{Value: 1},
+							Operator: tokens[1],
+							Right:    expr.Primary{Value: 1},
 						},
-						operator: tokens[3],
-						right:    Primary{Value: 1},
+						Operator: tokens[3],
+						Right:    expr.Primary{Value: 1},
 					}))
 				})
 			})
@@ -433,10 +434,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -452,10 +453,10 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left:     Primary{Value: 1},
-						operator: tokens[1],
-						right:    Primary{Value: 2},
+					Expect(actual).To(Equal(expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: 2},
 					}))
 				})
 			})
@@ -473,14 +474,14 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left: Binary{
-							left:     Primary{Value: 1},
-							operator: tokens[1],
-							right:    Primary{Value: 1},
+					Expect(actual).To(Equal(expr.Binary{
+						Left: expr.Binary{
+							Left:     expr.Primary{Value: 1},
+							Operator: tokens[1],
+							Right:    expr.Primary{Value: 1},
 						},
-						operator: tokens[3],
-						right:    Primary{Value: 1},
+						Operator: tokens[3],
+						Right:    expr.Primary{Value: 1},
 					}))
 				})
 			})
@@ -498,14 +499,14 @@ var _ = Describe("Parser", func() {
 					parser := New(tokens)
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
-					Expect(actual).To(Equal(Binary{
-						left: Binary{
-							left:     Primary{Value: 1},
-							operator: tokens[1],
-							right:    Primary{Value: 1},
+					Expect(actual).To(Equal(expr.Binary{
+						Left: expr.Binary{
+							Left:     expr.Primary{Value: 1},
+							Operator: tokens[1],
+							Right:    expr.Primary{Value: 1},
 						},
-						operator: tokens[3],
-						right:    Primary{Value: 1},
+						Operator: tokens[3],
+						Right:    expr.Primary{Value: 1},
 					}))
 				})
 			})

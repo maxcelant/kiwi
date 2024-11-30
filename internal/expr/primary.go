@@ -1,4 +1,4 @@
-package parser
+package expr
 
 type Primary struct {
 	Value any

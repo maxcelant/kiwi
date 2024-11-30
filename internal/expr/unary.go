@@ -1,10 +1,10 @@
-package parser
+package expr
 
 import "github.com/maxcelant/kiwi/internal/lexer"
 
 type Unary struct {
-	operator lexer.Token
-	right    any
+	Operator lexer.Token
+	Right    any
 }
 
 func (u Unary) Accept(v Visitor) any {

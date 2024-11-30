@@ -1,7 +1,7 @@
-package parser
+package expr
 
 type Grouping struct {
-	expr any
+	Expr any
 }
 
 func (g Grouping) Accept(v Visitor) any {

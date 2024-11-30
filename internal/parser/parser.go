@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	exp "github.com/maxcelant/kiwi/internal/expr"
 	"github.com/maxcelant/kiwi/internal/lexer"
 )
 
@@ -16,7 +17,7 @@ func New(tokens []lexer.Token) *Parser {
 	return &Parser{tokens, 0}
 }
 
-func (p *Parser) Parse() (Expr, error) {
+func (p *Parser) Parse() (exp.Expr, error) {
 	if len(p.tokens) == 0 {
 		return nil, nil
 	}
@@ -27,11 +28,11 @@ func (p *Parser) Parse() (Expr, error) {
 	return expr, nil
 }
 
-func (p *Parser) expression() (Expr, error) {
+func (p *Parser) expression() (exp.Expr, error) {
 	return p.equality()
 }
 
-func (p *Parser) equality() (Expr, error) {
+func (p *Parser) equality() (exp.Expr, error) {
 	expr, err := p.comparison()
 
 	for p.match(lexer.EQUAL, lexer.BANG_EQ) {
@@ -40,7 +41,7 @@ func (p *Parser) equality() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = Binary{
+		expr = exp.Binary{
 			Right:    right,
 			Operator: operator,
 			Left:     expr,
@@ -50,7 +51,7 @@ func (p *Parser) equality() (Expr, error) {
 	return expr, err
 }
 
-func (p *Parser) comparison() (Expr, error) {
+func (p *Parser) comparison() (exp.Expr, error) {
 	expr, err := p.term()
 
 	for p.match(lexer.LESS, lexer.LESS_EQ, lexer.GREATER, lexer.GREATER_EQ) {
@@ -59,7 +60,7 @@ func (p *Parser) comparison() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = Binary{
+		expr = exp.Binary{
 			Right:    right,
 			Operator: operator,
 			Left:     expr,
@@ -69,7 +70,7 @@ func (p *Parser) comparison() (Expr, error) {
 	return expr, err
 }
 
-func (p *Parser) term() (Expr, error) {
+func (p *Parser) term() (exp.Expr, error) {
 	expr, err := p.factor()
 
 	for p.match(lexer.PLUS, lexer.MINUS) {
@@ -78,7 +79,7 @@ func (p *Parser) term() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = Binary{
+		expr = exp.Binary{
 			Right:    right,
 			Operator: operator,
 			Left:     expr,
@@ -88,7 +89,7 @@ func (p *Parser) term() (Expr, error) {
 	return expr, err
 }
 
-func (p *Parser) factor() (Expr, error) {
+func (p *Parser) factor() (exp.Expr, error) {
 	expr, err := p.unary()
 
 	for p.match(lexer.SLASH, lexer.STAR) {
@@ -97,7 +98,7 @@ func (p *Parser) factor() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = Binary{
+		expr = exp.Binary{
 			Right:    right,
 			Operator: operator,
 			Left:     expr,
@@ -107,37 +108,37 @@ func (p *Parser) factor() (Expr, error) {
 	return expr, err
 }
 
-func (p *Parser) unary() (Expr, error) {
+func (p *Parser) unary() (exp.Expr, error) {
 	if p.match(lexer.BANG, lexer.MINUS) {
 		operator := p.prev()
 		right, err := p.unary()
 		if err != nil {
 			return nil, err
 		}
-		return Unary{
-			operator: operator,
-			right:    right,
+		return exp.Unary{
+			Operator: operator,
+			Right:    right,
 		}, nil
 	}
 
 	return p.primary()
 }
 
-func (p *Parser) primary() (Expr, error) {
+func (p *Parser) primary() (exp.Expr, error) {
 	if p.match(lexer.TRUE) {
-		return Primary{Value: true}, nil
+		return exp.Primary{Value: true}, nil
 	}
 	if p.match(lexer.FALSE) {
-		return Primary{Value: false}, nil
+		return exp.Primary{Value: false}, nil
 	}
 	if p.match(lexer.NIL) {
-		return Primary{Value: nil}, nil
+		return exp.Primary{Value: nil}, nil
 	}
 	if p.match(lexer.STRING) {
-		return Primary{Value: p.prev().Literal}, nil
+		return exp.Primary{Value: p.prev().Literal}, nil
 	}
 	if p.match(lexer.NUMBER) {
-		return Primary{Value: p.prev().Literal}, nil
+		return exp.Primary{Value: p.prev().Literal}, nil
 	}
 	if p.match(lexer.LEFT_PAREN) {
 		expr, err := p.expression()
@@ -148,7 +149,7 @@ func (p *Parser) primary() (Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		return Grouping{expr: expr}, nil
+		return exp.Grouping{Expr: expr}, nil
 	}
 
 	return nil, fmt.Errorf("%s expected expression", p.peek().Lexeme)

@@ -1,4 +1,4 @@
-package parser
+package expr
 
 type Visitor interface {
 	VisitBinary(Expr) any
