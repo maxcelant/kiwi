@@ -495,5 +495,53 @@ var _ = Describe("Interpreter", func() {
 				Expect(actual).To(Equal(false))
 			})
 		})
+
+		When("the parse tree has a binary node that compares two numbers for equality", func() {
+			It("should return true if the numbers are equal", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 5},
+					Operator: lexer.Token{Type: lexer.EQUAL_EQUAL, Lexeme: "==", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+
+			It("should return false if the numbers are not equal", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 5},
+					Operator: lexer.Token{Type: lexer.EQUAL_EQUAL, Lexeme: "==", Line: 1},
+					Right:    expr.Primary{Value: 3},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
+
+		When("the parse tree has a binary node that compares two numbers for inequality", func() {
+			It("should return true if the numbers are not equal", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 5},
+					Operator: lexer.Token{Type: lexer.BANG_EQ, Lexeme: "!=", Line: 1},
+					Right:    expr.Primary{Value: 3},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+
+			It("should return false if the numbers are equal", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 5},
+					Operator: lexer.Token{Type: lexer.BANG_EQ, Lexeme: "!=", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
 	})
 })
