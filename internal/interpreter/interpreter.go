@@ -67,96 +67,76 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	}
 
 	if binary.Operator.Type == lexer.EQUAL_EQUAL {
-		var l, r any
-		l, r, ok = BothOperandsNumbers(left, right)
-		if ok {
-			return l == r, nil
+		if ok := Compare(left, right, WithInt(), WithBool()); !ok {
+			return nil, fmt.Errorf("operands must be a number or boolean for equality operation")
 		}
-		l, r, ok = BothOperandsBooleans(left, right)
-		if ok {
-			return l == r, nil
-		}
-		return nil, fmt.Errorf("operands must be a number for equality operation")
+		return left == right, nil
 	}
 
 	if binary.Operator.Type == lexer.BANG_EQ {
-		var l, r any
-		l, r, ok = BothOperandsNumbers(left, right)
-		if ok {
-			return l != r, nil
+		if ok := Compare(left, right, WithInt(), WithBool()); !ok {
+			return nil, fmt.Errorf("operands must be a number or boolean for inequality operation")
 		}
-		l, r, ok = BothOperandsBooleans(left, right)
-		if ok {
-			return l != r, nil
-		}
-		return nil, fmt.Errorf("operands must be a number or boolean for inequality operation")
+		return left != right, nil
 	}
 
 	if binary.Operator.Type == lexer.GREATER {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
+		if ok := Compare(left, right, WithInt()); !ok {
 			return nil, fmt.Errorf("operands must be a number for greater than operation")
 		}
-		return l > r, nil
+		return left.(int) > right.(int), nil
 	}
 
 	if binary.Operator.Type == lexer.GREATER_EQ {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
+		if ok := Compare(left, right, WithInt()); !ok {
 			return nil, fmt.Errorf("operands must be a number for greater than or equal operation")
 		}
-		return l >= r, nil
+		return left.(int) >= right.(int), nil
 	}
 
 	if binary.Operator.Type == lexer.LESS {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
+		if ok := Compare(left, right, WithInt()); !ok {
 			return nil, fmt.Errorf("operands must be a number for less than operation")
 		}
-		return l < r, nil
+		return left.(int) < right.(int), nil
 	}
 
 	if binary.Operator.Type == lexer.LESS_EQ {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
+		if ok := Compare(left, right, WithInt()); !ok {
 			return nil, fmt.Errorf("operands must be a number for less than or equal operation")
 		}
-		return l <= r, nil
+		return left.(int) <= right.(int), nil
 	}
 
 	if binary.Operator.Type == lexer.PLUS {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
+		if ok := Compare(left, right, WithInt()); !ok {
 			return nil, fmt.Errorf("operands must be a number for add operation")
 		}
-		return l + r, nil
+		return left.(int) + right.(int), nil
 	}
 
 	if binary.Operator.Type == lexer.MINUS {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
-			return nil, fmt.Errorf("operands must be a number subtract operation")
+		if ok := Compare(left, right, WithInt()); !ok {
+			return nil, fmt.Errorf("operands must be a number for subtract operation")
 		}
-		return l - r, nil
+		return left.(int) - right.(int), nil
 	}
 
 	if binary.Operator.Type == lexer.SLASH {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
+		if ok := Compare(left, right, WithInt()); !ok {
 			return nil, fmt.Errorf("operands must be a number for division operation")
 		}
-		if r == 0 {
+		if right.(int) == 0 {
 			return nil, fmt.Errorf("cannot perform division by zero")
 		}
-		return l / r, nil
+		return left.(int) / right.(int), nil
 	}
 
 	if binary.Operator.Type == lexer.STAR {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
+		if ok := Compare(left, right, WithInt()); !ok {
 			return nil, fmt.Errorf("operands must be a number for multiplication operation")
 		}
-		return l * r, nil
+		return left.(int) * right.(int), nil
 	}
 
 	return "", nil

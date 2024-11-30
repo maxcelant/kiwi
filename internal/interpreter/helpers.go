@@ -68,3 +68,47 @@ func isString(v any) (string, bool) {
 	s, ok := v.(string)
 	return s, ok
 }
+
+type ComparatorFunc func(a any, b any) bool
+
+func Compare(a any, b any, comparators ...ComparatorFunc) bool {
+	for _, c := range comparators {
+		if ok := c(a, b); ok {
+			return ok
+		}
+	}
+	return false
+}
+
+func WithString() ComparatorFunc {
+	return func(a any, b any) bool {
+		a, ok := a.(bool)
+		if !ok {
+			return false
+		}
+		b, ok = b.(bool)
+		return ok
+	}
+}
+
+func WithInt() ComparatorFunc {
+	return func(a any, b any) bool {
+		a, ok := a.(int)
+		if !ok {
+			return false
+		}
+		b, ok = b.(int)
+		return ok
+	}
+}
+
+func WithBool() ComparatorFunc {
+	return func(a any, b any) bool {
+		a, ok := a.(bool)
+		if !ok {
+			return false
+		}
+		b, ok = b.(bool)
+		return ok
+	}
+}
