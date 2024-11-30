@@ -67,25 +67,17 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	}
 
 	if binary.Operator.Type == lexer.PLUS {
-		l, ok := it.isNumber(left)
+		l, r, ok := it.BothOperandsNumbers(left, right)
 		if !ok {
-			return nil, fmt.Errorf("left operand must be a number")
-		}
-		r, ok := it.isNumber(right)
-		if !ok {
-			return nil, fmt.Errorf("right operand must be a number")
+			return nil, fmt.Errorf("operands must be a number")
 		}
 		return l + r, nil
 	}
 
 	if binary.Operator.Type == lexer.MINUS {
-		l, ok := it.isNumber(left)
+		l, r, ok := it.BothOperandsNumbers(left, right)
 		if !ok {
-			return nil, fmt.Errorf("left operand must be a number")
-		}
-		r, ok := it.isNumber(right)
-		if !ok {
-			return nil, fmt.Errorf("right operand must be a number")
+			return nil, fmt.Errorf("operands must be a number")
 		}
 		return l - r, nil
 	}
@@ -169,4 +161,21 @@ func (it *Interpreter) isNumber(v any) (int, bool) {
 	default:
 		return 0.0, false
 	}
+}
+
+func (it *Interpreter) BothOperandsNumbers(a any, b any) (int, int, bool) {
+	left, ok := it.isNumber(a)
+	if !ok {
+		return 0, 0, false
+	}
+	right, ok := it.isNumber(b)
+	if !ok {
+		return 0, 0, false
+	}
+	return left, right, true
+}
+
+func (it *Interpreter) isString(v any) (string, bool) {
+	s, ok := v.(string)
+	return s, ok
 }

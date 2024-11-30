@@ -193,7 +193,7 @@ var _ = Describe("Interpreter", func() {
 				}
 				_, err := it.Evaluate(node)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(ContainSubstring("left operand must be a number"))
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
 			})
 		})
 
@@ -206,7 +206,7 @@ var _ = Describe("Interpreter", func() {
 				}
 				_, err := it.Evaluate(node)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(ContainSubstring("right operand must be a number"))
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
 			})
 		})
 
@@ -245,7 +245,7 @@ var _ = Describe("Interpreter", func() {
 				}
 				_, err := it.Evaluate(node)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(ContainSubstring("left operand must be a number"))
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
 			})
 		})
 
@@ -258,7 +258,7 @@ var _ = Describe("Interpreter", func() {
 				}
 				_, err := it.Evaluate(node)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(ContainSubstring("right operand must be a number"))
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
 			})
 		})
 	})
