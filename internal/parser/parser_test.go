@@ -285,5 +285,108 @@ var _ = Describe("Parser", func() {
 				})
 			})
 		})
+
+		Describe("Comparison", func() {
+			When("its a list with two numbers and a greater than", func() {
+				It("returns a tree with one comparison node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.GREATER, Lexeme: ">", Line: 1},
+						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left:     &Primary{value: 1},
+						operator: tokens[1],
+						right:    &Primary{value: 2},
+					}))
+				})
+			})
+
+			When("its a list with two numbers and a less than", func() {
+				It("returns a tree with one comparison node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.LESS, Lexeme: "<", Line: 1},
+						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left:     &Primary{value: 1},
+						operator: tokens[1],
+						right:    &Primary{value: 2},
+					}))
+				})
+			})
+
+			When("its a list with two numbers and a greater than or equal to", func() {
+				It("returns a tree with one comparison node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.GREATER_EQ, Lexeme: ">=", Line: 1},
+						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left:     &Primary{value: 1},
+						operator: tokens[1],
+						right:    &Primary{value: 2},
+					}))
+				})
+			})
+
+			When("its a list with two numbers and a less than or equal to", func() {
+				It("returns a tree with one comparison node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.LESS_EQ, Lexeme: "<=", Line: 1},
+						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left:     &Primary{value: 1},
+						operator: tokens[1],
+						right:    &Primary{value: 2},
+					}))
+				})
+			})
+
+			When("its a list of multiple numbers and greater than tokens", func() {
+				It("returns a nested comparison tree node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.GREATER, Lexeme: ">", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.GREATER, Lexeme: ">", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left: &Binary{
+							left:     &Primary{value: 1},
+							operator: tokens[1],
+							right:    &Primary{value: 1},
+						},
+						operator: tokens[3],
+						right:    &Primary{value: 1},
+					}))
+				})
+			})
+		})
 	})
 })
