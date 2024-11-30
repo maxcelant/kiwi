@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/maxcelant/kiwi/internal/expr"
+	"github.com/maxcelant/kiwi/internal/lexer"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -16,12 +17,15 @@ func TestInterpreter(t *testing.T) {
 var it *Interpreter
 
 var _ = Describe("Interpreter", func() {
+	BeforeEach(func() {
+		it = New(nil)
+	})
+
 	Describe("Visit Primary", func() {
 		When("the parse tree has a single primary number node", func() {
 			It("should return the value", func() {
 				node := expr.Primary{Value: 1}
-				it = New(node)
-				actual, err := it.Evaluate()
+				actual, err := it.Evaluate(node)
 				Expect(err).To(BeNil())
 				Expect(actual).To(Equal(1))
 			})
@@ -30,8 +34,7 @@ var _ = Describe("Interpreter", func() {
 		When("the parse tree has a single primary nil node", func() {
 			It("should return nil", func() {
 				node := expr.Primary{Value: nil}
-				it = New(node)
-				actual, err := it.Evaluate()
+				actual, err := it.Evaluate(node)
 				Expect(err).To(BeNil())
 				Expect(actual).To(BeNil())
 			})
@@ -40,8 +43,7 @@ var _ = Describe("Interpreter", func() {
 		When("the parse tree has a single primary string node", func() {
 			It("should return the string value", func() {
 				node := expr.Primary{Value: "test"}
-				it = New(node)
-				actual, err := it.Evaluate()
+				actual, err := it.Evaluate(node)
 				Expect(err).To(BeNil())
 				Expect(actual).To(Equal("test"))
 			})
@@ -53,8 +55,7 @@ var _ = Describe("Interpreter", func() {
 			It("should return the value of the primary node", func() {
 				primaryNode := expr.Primary{Value: 1}
 				groupingNode := expr.Grouping{Expression: primaryNode}
-				it = New(groupingNode)
-				actual, err := it.Evaluate()
+				actual, err := it.Evaluate(groupingNode)
 				Expect(err).To(BeNil())
 				Expect(actual).To(Equal(1))
 			})
@@ -64,10 +65,23 @@ var _ = Describe("Interpreter", func() {
 			It("should return the value of the primary node", func() {
 				primaryNode := expr.Primary{Value: "test"}
 				groupingNode := expr.Grouping{Expression: primaryNode}
-				it = New(groupingNode)
-				actual, err := it.Evaluate()
+				actual, err := it.Evaluate(groupingNode)
 				Expect(err).To(BeNil())
 				Expect(actual).To(Equal("test"))
+			})
+		})
+	})
+
+	Describe("Visit Unary", func() {
+		When("the parse tree has a unary node that includes a bang and a bool", func() {
+			It("should return the opposite of that value", func() {
+				node := expr.Unary{
+					Operator: lexer.Token{Type: lexer.BANG, Lexeme: "!", Line: 1},
+					Right:    expr.Primary{Value: true},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
 			})
 		})
 	})

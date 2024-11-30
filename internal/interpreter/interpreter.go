@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	exp "github.com/maxcelant/kiwi/internal/expr"
+	"github.com/maxcelant/kiwi/internal/lexer"
 )
 
 type Interpreter struct {
@@ -18,7 +19,7 @@ func New(expr exp.Expr) *Interpreter {
 
 func (it *Interpreter) Interpret() {
 	var str string
-	obj, err := it.Evaluate()
+	obj, err := it.Evaluate(it.expr)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -31,8 +32,8 @@ func (it *Interpreter) Interpret() {
 	fmt.Println(str)
 }
 
-func (it *Interpreter) Evaluate() (any, error) {
-	v, err := it.expr.Accept(it)
+func (it *Interpreter) Evaluate(expr exp.Expr) (any, error) {
+	v, err := expr.Accept(it)
 	if err != nil {
 		return nil, fmt.Errorf("failed to evaluate expression: %w", err)
 	}
@@ -44,6 +45,25 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 }
 
 func (it *Interpreter) VisitUnary(expr exp.Expr) (any, error) {
+	unary, ok := expr.(exp.Unary)
+	if !ok {
+		return nil, fmt.Errorf("not a unary expression")
+	}
+
+	rightExpr, ok := unary.Right.(exp.Expr)
+	if !ok {
+		return nil, fmt.Errorf("unary.Right is not of type exp.Expr")
+	}
+
+	right, err := it.Evaluate(rightExpr)
+	if err != nil {
+		return nil, err
+	}
+
+	if unary.Operator.Type == lexer.BANG {
+		return !it.IsTruthy(right), nil
+	}
+
 	return "", nil
 }
 
@@ -64,9 +84,17 @@ func (it *Interpreter) VisitGrouping(expr exp.Expr) (any, error) {
 	if !ok {
 		return nil, fmt.Errorf("not a grouping expression")
 	}
-	return expression.Accept(it)
+	value, err := it.Evaluate(expression)
+	if err != nil {
+		return nil, err
+	}
+	return value, nil
 }
 
 func (it *Interpreter) Stringify(obj any) (string, error) {
 	return "", nil
+}
+
+func (it *Interpreter) IsTruthy(v any) bool {
+	return true
 }
