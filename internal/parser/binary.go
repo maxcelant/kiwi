@@ -9,5 +9,5 @@ type Binary struct {
 }
 
 func (b Binary) Accept(v Visitor) Expr {
-	return v.VisitFactor(b)
+	return v.VisitBinary(b)
 }
