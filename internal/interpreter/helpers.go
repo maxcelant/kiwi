@@ -84,30 +84,6 @@ func isNumber(v any) (int, bool) {
 	}
 }
 
-func BothOperandsNumbers(a any, b any) (int, int, bool) {
-	left, ok := isNumber(a)
-	if !ok {
-		return 0, 0, false
-	}
-	right, ok := isNumber(b)
-	if !ok {
-		return 0, 0, false
-	}
-	return left, right, true
-}
-
-func BothOperandsBooleans(a any, b any) (bool, bool, bool) {
-	left, ok := a.(bool)
-	if !ok {
-		return false, false, false
-	}
-	right, ok := b.(bool)
-	if !ok {
-		return false, false, false
-	}
-	return left, right, true
-}
-
 func isString(v any) (string, bool) {
 	s, ok := v.(string)
 	return s, ok
