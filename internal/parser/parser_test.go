@@ -194,6 +194,31 @@ var _ = Describe("Parser", func() {
 					}))
 				})
 			})
+
+			When("its a list of multiple numbers and star tokens", func() {
+				It("returns a nested factor tree node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.STAR, Lexeme: "*", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.STAR, Lexeme: "*", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left: &Binary{
+							left:     &Primary{value: 1},
+							operator: tokens[1],
+							right:    &Primary{value: 1},
+						},
+						operator: tokens[3],
+						right:    &Primary{value: 1},
+					}))
+				})
+			})
 		})
 	})
 })

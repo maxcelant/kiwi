@@ -42,6 +42,20 @@ func (p *Parser) comparison() (Expr, error) {
 
 func (p *Parser) term() (Expr, error) {
 	expr, err := p.factor()
+
+	for p.match(lexer.PLUS, lexer.MINUS) {
+		operator := p.prev()
+		right, err := p.factor()
+		if err != nil {
+			return nil, err
+		}
+		expr = &Binary{
+			right:    right,
+			operator: operator,
+			left:     expr,
+		}
+	}
+
 	return expr, err
 }
 
