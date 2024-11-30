@@ -47,12 +47,41 @@ func (p *Parser) term() (Expr, error) {
 
 func (p *Parser) factor() (Expr, error) {
 	expr, err := p.unary()
+
+	fmt.Println(expr)
+
+	for p.match(lexer.SLASH, lexer.STAR) {
+		operator := p.prev()
+		fmt.Println(operator)
+		right, err := p.unary()
+		fmt.Println(right)
+		if err != nil {
+			return nil, err
+		}
+		expr = &Binary{
+			right:    right,
+			operator: operator,
+			left:     expr,
+		}
+	}
+
 	return expr, err
 }
 
 func (p *Parser) unary() (Expr, error) {
-	expr, err := p.primary()
-	return expr, err
+	if p.match(lexer.BANG, lexer.MINUS) {
+		operator := p.prev()
+		right, err := p.unary()
+		if err != nil {
+			return nil, err
+		}
+		return &Unary{
+			operator: operator,
+			right:    right,
+		}, nil
+	}
+
+	return p.primary()
 }
 
 func (p *Parser) primary() (Expr, error) {
