@@ -184,6 +184,45 @@ var _ = Describe("Interpreter", func() {
 			})
 		})
 
+		When("the parse tree has a binary node that adds two strings", func() {
+			It("should return the concatenation of those strings", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: "hello"},
+					Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+					Right:    expr.Primary{Value: "world"},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal("helloworld"))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-string left operand for addition", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 5},
+					Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+					Right:    expr.Primary{Value: " world"},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must both be a numbers or strings for add operation"))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-string right operand for addition", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: "hello"},
+					Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must both be a numbers or strings for add operation"))
+			})
+		})
+
 		When("the parse tree has a binary node with a non-number left operand", func() {
 			It("should return an error", func() {
 				node := expr.Binary{
@@ -193,7 +232,7 @@ var _ = Describe("Interpreter", func() {
 				}
 				_, err := it.Evaluate(node)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
+				Expect(err.Error()).To(ContainSubstring("operands must both be a numbers or strings for add operation"))
 			})
 		})
 
@@ -206,7 +245,7 @@ var _ = Describe("Interpreter", func() {
 				}
 				_, err := it.Evaluate(node)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
+				Expect(err.Error()).To(ContainSubstring("operands must both be a numbers or strings for add operation"))
 			})
 		})
 
@@ -402,6 +441,7 @@ var _ = Describe("Interpreter", func() {
 				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
 			})
 		})
+
 		When("the parse tree has a binary node that compares two numbers with greater than or equal", func() {
 			It("should return true if the left operand is greater than or equal to the right operand", func() {
 				node := expr.Binary{

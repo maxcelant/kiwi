@@ -109,10 +109,18 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	}
 
 	if binary.Operator.Type == lexer.PLUS {
-		if ok := Compare(left, right, WithInt()); !ok {
-			return nil, fmt.Errorf("operands must be a number for add operation")
+		if ok := Compare(left, right, WithInt(), WithString()); !ok {
+			return nil, fmt.Errorf("operands must both be a numbers or strings for add operation")
 		}
-		return left.(int) + right.(int), nil
+
+		switch left := left.(type) {
+		case int:
+			return left + right.(int), nil
+		case string:
+			return left + right.(string), nil
+		default:
+			return nil, fmt.Errorf("operands must be either both numbers or both strings for add operation")
+		}
 	}
 
 	if binary.Operator.Type == lexer.MINUS {
