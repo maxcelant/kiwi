@@ -24,7 +24,7 @@ func (it *Interpreter) Interpret() {
 		fmt.Println(err)
 		return
 	}
-	str, err = it.Stringify(obj)
+	str, err = Stringify(obj)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -67,7 +67,7 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	}
 
 	if binary.Operator.Type == lexer.PLUS {
-		l, r, ok := it.BothOperandsNumbers(left, right)
+		l, r, ok := BothOperandsNumbers(left, right)
 		if !ok {
 			return nil, fmt.Errorf("operands must be a number")
 		}
@@ -75,7 +75,7 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	}
 
 	if binary.Operator.Type == lexer.MINUS {
-		l, r, ok := it.BothOperandsNumbers(left, right)
+		l, r, ok := BothOperandsNumbers(left, right)
 		if !ok {
 			return nil, fmt.Errorf("operands must be a number")
 		}
@@ -102,11 +102,11 @@ func (it *Interpreter) VisitUnary(expr exp.Expr) (any, error) {
 	}
 
 	if unary.Operator.Type == lexer.BANG {
-		return !it.IsTruthy(right), nil
+		return !IsTruthy(right), nil
 	}
 
 	if unary.Operator.Type == lexer.MINUS {
-		num, ok := it.isNumber(right)
+		num, ok := isNumber(right)
 		if !ok {
 			return nil, fmt.Errorf("operand must be a number")
 		}
@@ -138,44 +138,4 @@ func (it *Interpreter) VisitGrouping(expr exp.Expr) (any, error) {
 		return nil, err
 	}
 	return value, nil
-}
-
-func (it *Interpreter) Stringify(obj any) (string, error) {
-	return "", nil
-}
-
-func (it *Interpreter) IsTruthy(v any) bool {
-	if v == nil {
-		return false
-	}
-	if b, ok := v.(bool); ok {
-		return b
-	}
-	return true
-}
-
-func (it *Interpreter) isNumber(v any) (int, bool) {
-	switch v.(type) {
-	case int, float64:
-		return v.(int), true
-	default:
-		return 0.0, false
-	}
-}
-
-func (it *Interpreter) BothOperandsNumbers(a any, b any) (int, int, bool) {
-	left, ok := it.isNumber(a)
-	if !ok {
-		return 0, 0, false
-	}
-	right, ok := it.isNumber(b)
-	if !ok {
-		return 0, 0, false
-	}
-	return left, right, true
-}
-
-func (it *Interpreter) isString(v any) (string, bool) {
-	s, ok := v.(string)
-	return s, ok
 }
