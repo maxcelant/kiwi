@@ -41,6 +41,43 @@ func (it *Interpreter) Evaluate(expr exp.Expr) (any, error) {
 }
 
 func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
+	binary, ok := expr.(exp.Binary)
+	if !ok {
+		return nil, fmt.Errorf("not a binary expression")
+	}
+
+	rightExpr, ok := binary.Right.(exp.Expr)
+	if !ok {
+		return nil, fmt.Errorf("unary.Right is not a type exp.Expr")
+	}
+
+	leftExpr, ok := binary.Left.(exp.Expr)
+	if !ok {
+		return nil, fmt.Errorf("unary.Left is not a type exp.Expr")
+	}
+
+	left, err := it.Evaluate(leftExpr)
+	if err != nil {
+		return nil, err
+	}
+
+	right, err := it.Evaluate(rightExpr)
+	if err != nil {
+		return nil, err
+	}
+
+	if binary.Operator.Type == lexer.PLUS {
+		l, ok := it.isNumber(left)
+		if !ok {
+			return nil, fmt.Errorf("left operand must be a number")
+		}
+		r, ok := it.isNumber(right)
+		if !ok {
+			return nil, fmt.Errorf("right operand must be a number")
+		}
+		return l + r, nil
+	}
+
 	return "", nil
 }
 

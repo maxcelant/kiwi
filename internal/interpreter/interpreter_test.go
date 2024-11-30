@@ -169,4 +169,45 @@ var _ = Describe("Interpreter", func() {
 			})
 		})
 	})
+
+	Describe("Visit Binary", func() {
+		When("the parse tree has a binary node that adds two numbers", func() {
+			It("should return the sum of those numbers", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(8))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number left operand", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: "non-number"},
+					Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("left operand must be a number"))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number right operand", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+					Right:    expr.Primary{Value: "non-number"},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("right operand must be a number"))
+			})
+		})
+	})
 })
