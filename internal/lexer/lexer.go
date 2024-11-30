@@ -134,7 +134,10 @@ func (l *Lexer) scanToken() error {
 			l.addToken(SLASH)
 		}
 	} else if ch == '"' {
-		l.handleString()
+		err = l.handleString()
+		if err != nil {
+			return err
+		}
 	} else if isNumber(ch) {
 		if err = l.handleNumber(); err != nil {
 			return err
@@ -203,7 +206,7 @@ func (l *Lexer) handleNumber() error {
 	return nil
 }
 
-func (l *Lexer) handleString() {
+func (l *Lexer) handleString() error {
 	for {
 		next := l.peek()
 		if next == 0 || next == '"' || !isAlphaNumeric(next) {
@@ -213,8 +216,12 @@ func (l *Lexer) handleString() {
 			l.advance()
 		}
 	}
+	if l.atEnd() {
+		return errors.New("unterminated string")
+	}
 	l.advance() // Skips the closing `"`
 	l.addTokenWithLiteral(STRING, l.source[l.start+1:l.curr-1])
+	return nil
 }
 
 func (l *Lexer) advance() byte {
