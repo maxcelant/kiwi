@@ -78,6 +78,18 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 		return l + r, nil
 	}
 
+	if binary.Operator.Type == lexer.MINUS {
+		l, ok := it.isNumber(left)
+		if !ok {
+			return nil, fmt.Errorf("left operand must be a number")
+		}
+		r, ok := it.isNumber(right)
+		if !ok {
+			return nil, fmt.Errorf("right operand must be a number")
+		}
+		return l - r, nil
+	}
+
 	return "", nil
 }
 

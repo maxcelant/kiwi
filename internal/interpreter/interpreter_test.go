@@ -209,5 +209,57 @@ var _ = Describe("Interpreter", func() {
 				Expect(err.Error()).To(ContainSubstring("right operand must be a number"))
 			})
 		})
+
+		When("the parse tree has a binary node that subtracts two numbers", func() {
+			It("should return the difference of those numbers", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+					Right:    expr.Primary{Value: 4},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(6))
+			})
+		})
+
+		When("the parse tree has a binary node that subtracts a smaller number from a larger number", func() {
+			It("should return the negative difference of those numbers", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+					Right:    expr.Primary{Value: 10},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(-7))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number left operand for subtraction", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: "non-number"},
+					Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+					Right:    expr.Primary{Value: 4},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("left operand must be a number"))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number right operand for subtraction", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+					Right:    expr.Primary{Value: "non-number"},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("right operand must be a number"))
+			})
+		})
 	})
 })
