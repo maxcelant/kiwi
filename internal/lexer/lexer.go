@@ -157,7 +157,7 @@ func (l *Lexer) addToken(tokenType TokenType) {
 	l.tokens = append(l.tokens, token)
 }
 
-func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal interface{}) {
+func (l *Lexer) addTokenWithLiteral(tokenType TokenType, literal any) {
 	ch := l.source[l.start:l.curr]
 	token := Token{
 		Type:    tokenType,

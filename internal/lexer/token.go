@@ -4,7 +4,7 @@ type TokenType int
 
 type Token struct {
 	Type    TokenType
-	Literal interface{}
+	Literal any
 	Lexeme  string
 	Line    int64
 }
