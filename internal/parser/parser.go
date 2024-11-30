@@ -32,6 +32,20 @@ func (p *Parser) expression() (Expr, error) {
 
 func (p *Parser) equality() (Expr, error) {
 	expr, err := p.comparison()
+
+	for p.match(lexer.EQUAL, lexer.BANG_EQ) {
+		operator := p.prev()
+		right, err := p.comparison()
+		if err != nil {
+			return nil, err
+		}
+		expr = &Binary{
+			right:    right,
+			operator: operator,
+			left:     expr,
+		}
+	}
+
 	return expr, err
 }
 

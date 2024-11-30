@@ -388,5 +388,95 @@ var _ = Describe("Parser", func() {
 				})
 			})
 		})
+
+		Describe("Equality", func() {
+			When("its a list with two numbers and an equal", func() {
+				It("returns a tree with one equality node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.EQUAL, Lexeme: "==", Line: 1},
+						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left:     &Primary{value: 1},
+						operator: tokens[1],
+						right:    &Primary{value: 2},
+					}))
+				})
+			})
+
+			When("its a list with two numbers and a not equal", func() {
+				It("returns a tree with one equality node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.BANG_EQ, Lexeme: "!=", Line: 1},
+						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left:     &Primary{value: 1},
+						operator: tokens[1],
+						right:    &Primary{value: 2},
+					}))
+				})
+			})
+
+			When("its a list of multiple numbers and equal tokens", func() {
+				It("returns a nested equality tree node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.EQUAL, Lexeme: "==", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.EQUAL, Lexeme: "==", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left: &Binary{
+							left:     &Primary{value: 1},
+							operator: tokens[1],
+							right:    &Primary{value: 1},
+						},
+						operator: tokens[3],
+						right:    &Primary{value: 1},
+					}))
+				})
+			})
+
+			When("its a list of multiple numbers and not equal tokens", func() {
+				It("returns a nested equality tree node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.BANG_EQ, Lexeme: "!=", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.BANG_EQ, Lexeme: "!=", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(&Binary{
+						left: &Binary{
+							left:     &Primary{value: 1},
+							operator: tokens[1],
+							right:    &Primary{value: 1},
+						},
+						operator: tokens[3],
+						right:    &Primary{value: 1},
+					}))
+				})
+			})
+		})
 	})
 })
