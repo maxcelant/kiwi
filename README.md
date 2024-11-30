@@ -10,12 +10,12 @@ Things like:
 ---
 
 #### Todo
-✅ Lexer Complete
-✅ Parser Complete
-✅ Interpreter Complete
-✅ Support for Expressions
-❌ Support for Statements
-❌ Loops
-❌ Funcions
-❌ Lists Support
-❌ Maps Support
+- ✅ Lexer Complete
+- ✅ Parser Complete
+- ✅ Interpreter Complete
+- ✅ Support for Expressions
+- ❌ Support for Statements
+- ❌ Loops
+- ❌ Funcions
+- ❌ Lists Support
+- ❌ Maps Support
