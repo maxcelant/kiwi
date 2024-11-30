@@ -56,7 +56,15 @@ func (it *Interpreter) VisitPrimary(expr exp.Expr) (any, error) {
 }
 
 func (it *Interpreter) VisitGrouping(expr exp.Expr) (any, error) {
-	return "", nil
+	grouping, ok := expr.(exp.Grouping)
+	if !ok {
+		return nil, fmt.Errorf("not a grouping expression")
+	}
+	expression, ok := grouping.Expression.(exp.Expr)
+	if !ok {
+		return nil, fmt.Errorf("not a grouping expression")
+	}
+	return expression.Accept(it)
 }
 
 func (it *Interpreter) Stringify(obj any) (string, error) {

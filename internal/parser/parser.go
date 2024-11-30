@@ -149,7 +149,7 @@ func (p *Parser) primary() (exp.Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		return exp.Grouping{Expr: expr}, nil
+		return exp.Grouping{Expression: expr}, nil
 	}
 
 	return nil, fmt.Errorf("%s expected expression", p.peek().Lexeme)

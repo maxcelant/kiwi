@@ -47,4 +47,28 @@ var _ = Describe("Interpreter", func() {
 			})
 		})
 	})
+
+	Describe("Visit Grouping", func() {
+		When("the parse tree has a grouping node with a primary number node", func() {
+			It("should return the value of the primary node", func() {
+				primaryNode := expr.Primary{Value: 1}
+				groupingNode := expr.Grouping{Expression: primaryNode}
+				it = New(groupingNode)
+				actual, err := it.Evaluate()
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(1))
+			})
+		})
+
+		When("the parse tree has a grouping node with a primary string node", func() {
+			It("should return the value of the primary node", func() {
+				primaryNode := expr.Primary{Value: "test"}
+				groupingNode := expr.Grouping{Expression: primaryNode}
+				it = New(groupingNode)
+				actual, err := it.Evaluate()
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal("test"))
+			})
+		})
+	})
 })

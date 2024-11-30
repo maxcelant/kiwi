@@ -132,7 +132,7 @@ var _ = Describe("Parser", func() {
 					actual, err := parser.Parse()
 					Expect(err).To(BeNil())
 					Expect(actual).To(Equal(expr.Grouping{
-						Expr: expr.Primary{Value: 1},
+						Expression: expr.Primary{Value: 1},
 					}))
 				})
 			})
