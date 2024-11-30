@@ -35,7 +35,7 @@ func (p *Parser) expression() (exp.Expr, error) {
 func (p *Parser) equality() (exp.Expr, error) {
 	expr, err := p.comparison()
 
-	for p.match(lexer.EQUAL, lexer.BANG_EQ) {
+	for p.match(lexer.EQUAL_EQUAL, lexer.BANG_EQ) {
 		operator := p.prev()
 		right, err := p.comparison()
 		if err != nil {

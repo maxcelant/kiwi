@@ -67,19 +67,29 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	}
 
 	if binary.Operator.Type == lexer.EQUAL_EQUAL {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
-			return nil, fmt.Errorf("operands must be a number for equality operation")
+		var l, r any
+		l, r, ok = BothOperandsNumbers(left, right)
+		if ok {
+			return l == r, nil
 		}
-		return l == r, nil
+		l, r, ok = BothOperandsBooleans(left, right)
+		if ok {
+			return l == r, nil
+		}
+		return nil, fmt.Errorf("operands must be a number for equality operation")
 	}
 
 	if binary.Operator.Type == lexer.BANG_EQ {
-		l, r, ok := BothOperandsNumbers(left, right)
-		if !ok {
-			return nil, fmt.Errorf("operands must be a number for equality operation")
+		var l, r any
+		l, r, ok = BothOperandsNumbers(left, right)
+		if ok {
+			return l != r, nil
 		}
-		return l != r, nil
+		l, r, ok = BothOperandsBooleans(left, right)
+		if ok {
+			return l != r, nil
+		}
+		return nil, fmt.Errorf("operands must be a number or boolean for inequality operation")
 	}
 
 	if binary.Operator.Type == lexer.GREATER {

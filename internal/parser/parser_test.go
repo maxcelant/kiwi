@@ -427,7 +427,7 @@ var _ = Describe("Parser", func() {
 				It("returns a tree with one equality node", func() {
 					tokens := []lexer.Token{
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
-						{Type: lexer.EQUAL, Lexeme: "==", Line: 1},
+						{Type: lexer.EQUAL_EQUAL, Lexeme: "==", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
@@ -465,9 +465,9 @@ var _ = Describe("Parser", func() {
 				It("returns a nested equality tree node", func() {
 					tokens := []lexer.Token{
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
-						{Type: lexer.EQUAL, Lexeme: "==", Line: 1},
+						{Type: lexer.EQUAL_EQUAL, Lexeme: "==", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
-						{Type: lexer.EQUAL, Lexeme: "==", Line: 1},
+						{Type: lexer.EQUAL_EQUAL, Lexeme: "==", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
