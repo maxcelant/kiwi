@@ -69,7 +69,7 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	if binary.Operator.Type == lexer.PLUS {
 		l, r, ok := BothOperandsNumbers(left, right)
 		if !ok {
-			return nil, fmt.Errorf("operands must be a number")
+			return nil, fmt.Errorf("operands must be a number for add operation")
 		}
 		return l + r, nil
 	}
@@ -77,9 +77,28 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	if binary.Operator.Type == lexer.MINUS {
 		l, r, ok := BothOperandsNumbers(left, right)
 		if !ok {
-			return nil, fmt.Errorf("operands must be a number")
+			return nil, fmt.Errorf("operands must be a number subtract operation")
 		}
 		return l - r, nil
+	}
+
+	if binary.Operator.Type == lexer.SLASH {
+		l, r, ok := BothOperandsNumbers(left, right)
+		if !ok {
+			return nil, fmt.Errorf("operands must be a number for division operation")
+		}
+		if r == 0 {
+			return nil, fmt.Errorf("cannot perform division by zero")
+		}
+		return l / r, nil
+	}
+
+	if binary.Operator.Type == lexer.STAR {
+		l, r, ok := BothOperandsNumbers(left, right)
+		if !ok {
+			return nil, fmt.Errorf("operands must be a number for multiplication operation")
+		}
+		return l * r, nil
 	}
 
 	return "", nil

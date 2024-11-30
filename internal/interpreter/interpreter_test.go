@@ -261,5 +261,96 @@ var _ = Describe("Interpreter", func() {
 				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
 			})
 		})
+
+		When("the parse tree has a binary node that multiplies two numbers", func() {
+			It("should return the product of those numbers", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.STAR, Lexeme: "*", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(15))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number left operand for multiplication", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: "non-number"},
+					Operator: lexer.Token{Type: lexer.STAR, Lexeme: "*", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number right operand for multiplication", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.STAR, Lexeme: "*", Line: 1},
+					Right:    expr.Primary{Value: "non-number"},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
+			})
+		})
+
+		When("the parse tree has a binary node that divides two numbers", func() {
+			It("should return the quotient of those numbers", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.SLASH, Lexeme: "/", Line: 1},
+					Right:    expr.Primary{Value: 2},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(5))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number left operand for division", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: "non-number"},
+					Operator: lexer.Token{Type: lexer.SLASH, Lexeme: "/", Line: 1},
+					Right:    expr.Primary{Value: 2},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number right operand for division", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.SLASH, Lexeme: "/", Line: 1},
+					Right:    expr.Primary{Value: "non-number"},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
+			})
+		})
+
+		When("the parse tree has a binary node that divides a number by zero", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.SLASH, Lexeme: "/", Line: 1},
+					Right:    expr.Primary{Value: 0},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("division by zero"))
+			})
+		})
 	})
 })
