@@ -125,19 +125,19 @@ func (p *Parser) unary() (Expr, error) {
 
 func (p *Parser) primary() (Expr, error) {
 	if p.match(lexer.TRUE) {
-		return Primary{value: true}, nil
+		return Primary{Value: true}, nil
 	}
 	if p.match(lexer.FALSE) {
-		return Primary{value: false}, nil
+		return Primary{Value: false}, nil
 	}
 	if p.match(lexer.NIL) {
-		return Primary{value: nil}, nil
+		return Primary{Value: nil}, nil
 	}
 	if p.match(lexer.STRING) {
-		return Primary{value: p.prev().Literal}, nil
+		return Primary{Value: p.prev().Literal}, nil
 	}
 	if p.match(lexer.NUMBER) {
-		return Primary{value: p.prev().Literal}, nil
+		return Primary{Value: p.prev().Literal}, nil
 	}
 	if p.match(lexer.LEFT_PAREN) {
 		expr, err := p.expression()
