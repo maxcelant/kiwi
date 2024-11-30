@@ -2,7 +2,7 @@
 A high-level language similar to Ruby and Python. Hoping to create a collection of helpful standard lib functions to help in interviews.
 
 Things like:
-- Dymamic types
+- Dynamic types
 - Simple to use double-ended queues/lists
 - Simple to use heap and tree datastructures
 - Variety of string helper functions
