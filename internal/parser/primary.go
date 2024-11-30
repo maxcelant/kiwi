@@ -1,7 +1,7 @@
 package parser
 
 type Primary struct {
-	value any
+	Value any
 }
 
 func (p Primary) Accept(v Visitor) any {
