@@ -1,5 +1,5 @@
 package expr
 
 type Expr interface {
-	Accept(Visitor) any
+	Accept(Visitor) (any, error)
 }

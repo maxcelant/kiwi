@@ -8,6 +8,10 @@ type Binary struct {
 	Operator lexer.Token
 }
 
-func (b Binary) Accept(v Visitor) any {
-	return v.VisitBinary(b)
+func (b Binary) Accept(v Visitor) (any, error) {
+	val, err := v.VisitBinary(b)
+	if err != nil {
+		return nil, err
+	}
+	return val, nil
 }

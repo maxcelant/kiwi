@@ -1,8 +1,8 @@
 package expr
 
 type Visitor interface {
-	VisitBinary(Expr) any
-	VisitUnary(Expr) any
-	VisitPrimary(Expr) any
-	VisitGrouping(Expr) any
+	VisitBinary(Expr) (any, error)
+	VisitUnary(Expr) (any, error)
+	VisitPrimary(Expr) (any, error)
+	VisitGrouping(Expr) (any, error)
 }

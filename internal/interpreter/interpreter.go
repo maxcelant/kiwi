@@ -17,36 +17,46 @@ func New(expr exp.Expr) *Interpreter {
 }
 
 func (it *Interpreter) Interpret() {
-	obj := it.Evaluate()
-	str, err := it.Stringify(obj)
+	var str string
+	obj, err := it.Evaluate()
 	if err != nil {
-		// handle error
+		fmt.Println(err)
+		return
+	}
+	str, err = it.Stringify(obj)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 	fmt.Println(str)
 }
 
-func (it *Interpreter) Evaluate() any {
-	return it.expr.Accept(it)
+func (it *Interpreter) Evaluate() (any, error) {
+	v, err := it.expr.Accept(it)
+	if err != nil {
+		return nil, fmt.Errorf("failed to evaluate expression: %w", err)
+	}
+	return v, nil
 }
 
-func (it *Interpreter) VisitBinary(expr exp.Expr) any {
-	return ""
+func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
+	return "", nil
 }
 
-func (it *Interpreter) VisitUnary(expr exp.Expr) any {
-	return ""
+func (it *Interpreter) VisitUnary(expr exp.Expr) (any, error) {
+	return "", nil
 }
 
-func (it *Interpreter) VisitPrimary(expr exp.Expr) any {
+func (it *Interpreter) VisitPrimary(expr exp.Expr) (any, error) {
 	primary, ok := expr.(exp.Primary)
 	if !ok {
-		// handle error
+		return nil, fmt.Errorf("not a primary expression")
 	}
-	return primary.Value
+	return primary.Value, nil
 }
 
-func (it *Interpreter) VisitGrouping(expr exp.Expr) any {
-	return ""
+func (it *Interpreter) VisitGrouping(expr exp.Expr) (any, error) {
+	return "", nil
 }
 
 func (it *Interpreter) Stringify(obj any) (string, error) {

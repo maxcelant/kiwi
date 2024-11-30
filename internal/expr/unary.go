@@ -7,6 +7,10 @@ type Unary struct {
 	Right    any
 }
 
-func (u Unary) Accept(v Visitor) any {
-	return v.VisitUnary(u)
+func (u Unary) Accept(v Visitor) (any, error) {
+	val, err := v.VisitUnary(u)
+	if err != nil {
+		return nil, err
+	}
+	return val, nil
 }
