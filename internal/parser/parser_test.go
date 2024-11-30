@@ -135,6 +135,21 @@ var _ = Describe("Parser", func() {
 					}))
 				})
 			})
+
+			When("its a list with a number and a missing closing parenthesis", func() {
+				It("returns an error", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.LEFT_PAREN, Lexeme: "(", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).ToNot(BeNil())
+					Expect(actual).To(BeNil())
+					Expect(err.Error()).To(ContainSubstring("Expected right parent ')' after expression"))
+				})
+			})
 		})
 
 		Describe("Unary", func() {
