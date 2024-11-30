@@ -12,19 +12,6 @@
 - [ ] Maps Support
 
 ### Basic Syntax
-
-```
-var foo = "foo";
-
-log(foo);
-
-fn bar() {
-    baz = "baz";
-}
-
-fn main() {
-    bar();
-}
-```
+A high-level language similar to Ruby and Python. Hoping to create a collection of helpful standard lib functions to help in interviews.
 
 
