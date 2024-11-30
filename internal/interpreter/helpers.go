@@ -15,11 +15,11 @@ func Compare(a any, b any, comparators ...ComparatorFunc) bool {
 
 func WithString() ComparatorFunc {
 	return func(a any, b any) bool {
-		a, ok := a.(bool)
+		a, ok := a.(string)
 		if !ok {
 			return false
 		}
-		b, ok = b.(bool)
+		b, ok = b.(string)
 		return ok
 	}
 }

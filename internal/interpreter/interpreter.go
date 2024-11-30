@@ -67,14 +67,14 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	}
 
 	if binary.Operator.Type == lexer.EQUAL_EQUAL {
-		if ok := Compare(left, right, WithInt(), WithBool()); !ok {
+		if ok := Compare(left, right, WithInt(), WithBool(), WithString()); !ok {
 			return nil, fmt.Errorf("operands must be a number or boolean for equality operation")
 		}
 		return left == right, nil
 	}
 
 	if binary.Operator.Type == lexer.BANG_EQ {
-		if ok := Compare(left, right, WithInt(), WithBool()); !ok {
+		if ok := Compare(left, right, WithInt(), WithBool(), WithString()); !ok {
 			return nil, fmt.Errorf("operands must be a number or boolean for inequality operation")
 		}
 		return left != right, nil
