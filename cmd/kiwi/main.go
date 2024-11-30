@@ -5,12 +5,14 @@ import (
 	"log"
 	"os"
 
+	"github.com/maxcelant/kiwi/internal/interpreter"
 	"github.com/maxcelant/kiwi/internal/lexer"
 	"github.com/maxcelant/kiwi/internal/parser"
 )
 
 var lxr *lexer.Lexer
 var psr *parser.Parser
+var it *interpreter.Interpreter
 
 // todo: fix me
 // func runREPL() error {
@@ -61,7 +63,8 @@ func run() error {
 		return fmt.Errorf("parse error occurred: %w", err)
 	}
 
-	fmt.Println(expr)
+	it = interpreter.New(expr)
+	it.Interpret()
 
 	return nil
 }
