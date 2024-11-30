@@ -3,15 +3,14 @@ package interpreter
 import (
 	"fmt"
 
-	"github.com/maxcelant/kiwi/internal/expr"
-	"github.com/maxcelant/kiwi/internal/parser"
+	exp "github.com/maxcelant/kiwi/internal/expr"
 )
 
 type Interpreter struct {
-	expr parser.Expr
+	expr exp.Expr
 }
 
-func New(expr parser.Expr) *Interpreter {
+func New(expr exp.Expr) *Interpreter {
 	return &Interpreter{
 		expr: expr,
 	}
@@ -30,26 +29,26 @@ func (it *Interpreter) Evaluate() any {
 	return it.expr.Accept(it)
 }
 
-func (it *Interpreter) VisitBinary(expr expr.Expr) any {
-
+func (it *Interpreter) VisitBinary(expr exp.Expr) any {
+	return ""
 }
 
-func (it *Interpreter) VisitUnary(expr expr.Expr) any {
-
+func (it *Interpreter) VisitUnary(expr exp.Expr) any {
+	return ""
 }
 
-func (it *Interpreter) VisitPrimary(expr expr.Expr) any {
-	primary, ok := expr.(*expr.Primary)
+func (it *Interpreter) VisitPrimary(expr exp.Expr) any {
+	primary, ok := expr.(exp.Primary)
 	if !ok {
 		// handle error
 	}
 	return primary.Value
 }
 
-func (it *Interpreter) VisitGrouping(expr expr.Expr) any {
-
+func (it *Interpreter) VisitGrouping(expr exp.Expr) any {
+	return ""
 }
 
 func (it *Interpreter) Stringify(obj any) (string, error) {
-
+	return "", nil
 }
