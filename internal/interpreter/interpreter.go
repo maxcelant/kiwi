@@ -64,6 +64,14 @@ func (it *Interpreter) VisitUnary(expr exp.Expr) (any, error) {
 		return !it.IsTruthy(right), nil
 	}
 
+	if unary.Operator.Type == lexer.MINUS {
+		num, ok := it.isNumber(right)
+		if !ok {
+			return nil, fmt.Errorf("operand must be a number")
+		}
+		return -num, nil
+	}
+
 	return "", nil
 }
 
@@ -103,4 +111,13 @@ func (it *Interpreter) IsTruthy(v any) bool {
 		return b
 	}
 	return true
+}
+
+func (it *Interpreter) isNumber(v any) (int, bool) {
+	switch v.(type) {
+	case int, float64:
+		return v.(int), true
+	default:
+		return 0.0, false
+	}
 }

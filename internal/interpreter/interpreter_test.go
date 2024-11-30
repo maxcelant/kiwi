@@ -120,5 +120,53 @@ var _ = Describe("Interpreter", func() {
 				Expect(actual).To(Equal(false))
 			})
 		})
+
+		When("the parse tree has a unary node that includes a minus and a positive number", func() {
+			It("should return the negative of that number", func() {
+				node := expr.Unary{
+					Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(-5))
+			})
+		})
+
+		When("the parse tree has a unary node that includes a minus and a negative number", func() {
+			It("should return the positive of that number", func() {
+				node := expr.Unary{
+					Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+					Right:    expr.Primary{Value: -5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(5))
+			})
+		})
+
+		When("the parse tree has a unary node that includes a minus and zero", func() {
+			It("should return zero", func() {
+				node := expr.Unary{
+					Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+					Right:    expr.Primary{Value: 0},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(0))
+			})
+		})
+
+		When("the parse tree has a unary node that includes a minus and a non-number value", func() {
+			It("should return an error", func() {
+				node := expr.Unary{
+					Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+					Right:    expr.Primary{Value: "non-number"},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operand must be a number"))
+			})
+		})
 	})
 })
