@@ -3,9 +3,9 @@ package parser
 import "github.com/maxcelant/kiwi/internal/lexer"
 
 type Binary struct {
-	right    any
-	left     any
-	operator lexer.Token
+	Right    any
+	Left     any
+	Operator lexer.Token
 }
 
 func (b Binary) Accept(v Visitor) any {

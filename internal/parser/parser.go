@@ -41,9 +41,9 @@ func (p *Parser) equality() (Expr, error) {
 			return nil, err
 		}
 		expr = Binary{
-			right:    right,
-			operator: operator,
-			left:     expr,
+			Right:    right,
+			Operator: operator,
+			Left:     expr,
 		}
 	}
 
@@ -60,9 +60,9 @@ func (p *Parser) comparison() (Expr, error) {
 			return nil, err
 		}
 		expr = Binary{
-			right:    right,
-			operator: operator,
-			left:     expr,
+			Right:    right,
+			Operator: operator,
+			Left:     expr,
 		}
 	}
 
@@ -79,9 +79,9 @@ func (p *Parser) term() (Expr, error) {
 			return nil, err
 		}
 		expr = Binary{
-			right:    right,
-			operator: operator,
-			left:     expr,
+			Right:    right,
+			Operator: operator,
+			Left:     expr,
 		}
 	}
 
@@ -98,9 +98,9 @@ func (p *Parser) factor() (Expr, error) {
 			return nil, err
 		}
 		expr = Binary{
-			right:    right,
-			operator: operator,
-			left:     expr,
+			Right:    right,
+			Operator: operator,
+			Left:     expr,
 		}
 	}
 
