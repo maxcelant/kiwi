@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/maxcelant/kiwi/internal/lexer"
@@ -138,6 +139,17 @@ func (p *Parser) primary() (Expr, error) {
 	if p.match(lexer.NUMBER) {
 		return Primary{value: p.prev().Literal}, nil
 	}
+	if p.match(lexer.LEFT_PAREN) {
+		expr, err := p.expression()
+		if err != nil {
+			return nil, err
+		}
+		err = p.consume(lexer.RIGHT_PAREN, "Expected right parent ')' after expression")
+		if err != nil {
+			return nil, err
+		}
+		return Grouping{expr: expr}, nil
+	}
 
 	return nil, fmt.Errorf("%s expected expression", p.peek().Lexeme)
 }
@@ -172,6 +184,14 @@ func (p *Parser) peek() lexer.Token {
 
 func (p *Parser) prev() lexer.Token {
 	return p.tokens[p.current-1]
+}
+
+func (p *Parser) consume(tokenType lexer.TokenType, err string) error {
+	if p.peek().Type == tokenType {
+		p.advance()
+		return nil
+	}
+	return errors.New(err)
 }
 
 func (p *Parser) isAtEnd() bool {

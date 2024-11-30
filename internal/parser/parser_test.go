@@ -118,6 +118,23 @@ var _ = Describe("Parser", func() {
 					Expect(actual).To(Equal(Primary{value: 5}))
 				})
 			})
+
+			When("its a list with a number inside parentheses", func() {
+				It("returns a tree with a grouping node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.LEFT_PAREN, Lexeme: "(", Line: 1},
+						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.RIGHT_PAREN, Lexeme: ")", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(Grouping{
+						expr: Primary{value: 1},
+					}))
+				})
+			})
 		})
 
 		Describe("Unary", func() {
