@@ -48,13 +48,9 @@ func (p *Parser) term() (Expr, error) {
 func (p *Parser) factor() (Expr, error) {
 	expr, err := p.unary()
 
-	fmt.Println(expr)
-
 	for p.match(lexer.SLASH, lexer.STAR) {
 		operator := p.prev()
-		fmt.Println(operator)
 		right, err := p.unary()
-		fmt.Println(right)
 		if err != nil {
 			return nil, err
 		}
