@@ -96,5 +96,11 @@ func (it *Interpreter) Stringify(obj any) (string, error) {
 }
 
 func (it *Interpreter) IsTruthy(v any) bool {
+	if v == nil {
+		return false
+	}
+	if b, ok := v.(bool); ok {
+		return b
+	}
 	return true
 }

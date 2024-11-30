@@ -73,11 +73,47 @@ var _ = Describe("Interpreter", func() {
 	})
 
 	Describe("Visit Unary", func() {
-		When("the parse tree has a unary node that includes a bang and a bool", func() {
+		When("the parse tree has a unary node that includes a bang and a true", func() {
 			It("should return the opposite of that value", func() {
 				node := expr.Unary{
 					Operator: lexer.Token{Type: lexer.BANG, Lexeme: "!", Line: 1},
 					Right:    expr.Primary{Value: true},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
+
+		When("the parse tree has a unary node that includes a bang and a false", func() {
+			It("should return the opposite of that value", func() {
+				node := expr.Unary{
+					Operator: lexer.Token{Type: lexer.BANG, Lexeme: "!", Line: 1},
+					Right:    expr.Primary{Value: false},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+		})
+
+		When("the parse tree has a unary node that includes a bang and a nil", func() {
+			It("should return true", func() {
+				node := expr.Unary{
+					Operator: lexer.Token{Type: lexer.BANG, Lexeme: "!", Line: 1},
+					Right:    expr.Primary{Value: nil},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+		})
+
+		When("the parse tree has a unary node that includes a bang and a non-nil value", func() {
+			It("should return false", func() {
+				node := expr.Unary{
+					Operator: lexer.Token{Type: lexer.BANG, Lexeme: "!", Line: 1},
+					Right:    expr.Primary{Value: "non-nil"},
 				}
 				actual, err := it.Evaluate(node)
 				Expect(err).To(BeNil())
