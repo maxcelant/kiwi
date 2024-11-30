@@ -66,6 +66,38 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 		return nil, err
 	}
 
+	if binary.Operator.Type == lexer.GREATER {
+		l, r, ok := BothOperandsNumbers(left, right)
+		if !ok {
+			return nil, fmt.Errorf("operands must be a number for greater than operation")
+		}
+		return l > r, nil
+	}
+
+	if binary.Operator.Type == lexer.GREATER_EQ {
+		l, r, ok := BothOperandsNumbers(left, right)
+		if !ok {
+			return nil, fmt.Errorf("operands must be a number for greater than or equal operation")
+		}
+		return l >= r, nil
+	}
+
+	if binary.Operator.Type == lexer.LESS {
+		l, r, ok := BothOperandsNumbers(left, right)
+		if !ok {
+			return nil, fmt.Errorf("operands must be a number for less than operation")
+		}
+		return l < r, nil
+	}
+
+	if binary.Operator.Type == lexer.LESS_EQ {
+		l, r, ok := BothOperandsNumbers(left, right)
+		if !ok {
+			return nil, fmt.Errorf("operands must be a number for less than or equal operation")
+		}
+		return l <= r, nil
+	}
+
 	if binary.Operator.Type == lexer.PLUS {
 		l, r, ok := BothOperandsNumbers(left, right)
 		if !ok {

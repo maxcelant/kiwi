@@ -352,5 +352,148 @@ var _ = Describe("Interpreter", func() {
 				Expect(err.Error()).To(ContainSubstring("division by zero"))
 			})
 		})
+
+		When("the parse tree has a binary node that compares two numbers with greater than", func() {
+			It("should return true if the left operand is greater than the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.GREATER, Lexeme: ">", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+
+			It("should return false if the left operand is not greater than the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.GREATER, Lexeme: ">", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number left operand for greater than", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: "non-number"},
+					Operator: lexer.Token{Type: lexer.GREATER, Lexeme: ">", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
+			})
+		})
+
+		When("the parse tree has a binary node with a non-number right operand for greater than", func() {
+			It("should return an error", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.GREATER, Lexeme: ">", Line: 1},
+					Right:    expr.Primary{Value: "non-number"},
+				}
+				_, err := it.Evaluate(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must be a number"))
+			})
+		})
+		When("the parse tree has a binary node that compares two numbers with greater than or equal", func() {
+			It("should return true if the left operand is greater than or equal to the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.GREATER_EQ, Lexeme: ">=", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+
+			It("should return true if the left operand is equal to the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 5},
+					Operator: lexer.Token{Type: lexer.GREATER_EQ, Lexeme: ">=", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+
+			It("should return false if the left operand is less than the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.GREATER_EQ, Lexeme: ">=", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
+
+		When("the parse tree has a binary node that compares two numbers with less than", func() {
+			It("should return true if the left operand is less than the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.LESS, Lexeme: "<", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+
+			It("should return false if the left operand is not less than the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.LESS, Lexeme: "<", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
+
+		When("the parse tree has a binary node that compares two numbers with less than or equal", func() {
+			It("should return true if the left operand is less than or equal to the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 3},
+					Operator: lexer.Token{Type: lexer.LESS_EQ, Lexeme: "<=", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+
+			It("should return true if the left operand is equal to the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 5},
+					Operator: lexer.Token{Type: lexer.LESS_EQ, Lexeme: "<=", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+
+			It("should return false if the left operand is greater than the right operand", func() {
+				node := expr.Binary{
+					Left:     expr.Primary{Value: 10},
+					Operator: lexer.Token{Type: lexer.LESS_EQ, Lexeme: "<=", Line: 1},
+					Right:    expr.Primary{Value: 5},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
 	})
 })
