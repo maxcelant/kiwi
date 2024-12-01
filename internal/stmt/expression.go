@@ -7,5 +7,6 @@ type Expression struct {
 }
 
 func (e Expression) Accept(v Visitor) (any, error) {
+	v.VisitExpressionStatement(e)
 	return nil, nil
 }

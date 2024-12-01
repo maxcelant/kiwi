@@ -46,23 +46,23 @@ func WithBool() ComparatorFunc {
 	}
 }
 
-func Stringify(obj any) (string, error) {
+func Stringify(obj any) string {
 	if obj == nil {
-		return "nil", nil
+		return "nil"
 	}
 	if v, ok := obj.(int); ok {
-		return fmt.Sprintf("%d", v), nil
+		return fmt.Sprintf("%d", v)
 	}
 	if v, ok := obj.(float64); ok {
-		return fmt.Sprintf("%f", v), nil
+		return fmt.Sprintf("%f", v)
 	}
 	if v, ok := obj.(string); ok {
-		return v, nil
+		return v
 	}
 	if v, ok := obj.(bool); ok {
-		return fmt.Sprintf("%t", v), nil
+		return fmt.Sprintf("%t", v)
 	}
-	return "", fmt.Errorf("unsupported type: %T", obj)
+	return fmt.Sprintf("unsupported type: %T", obj)
 }
 
 func IsTruthy(v any) bool {

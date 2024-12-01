@@ -1,8 +1,6 @@
 package stmt
 
 import (
-	"fmt"
-
 	"github.com/maxcelant/kiwi/internal/expr"
 )
 
@@ -11,6 +9,6 @@ type Print struct {
 }
 
 func (p Print) Accept(v Visitor) (any, error) {
-	fmt.Print(p.Expression)
+	v.VisitPrintStatement(p)
 	return nil, nil
 }
