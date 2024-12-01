@@ -23,6 +23,7 @@ var keywords = map[string]TokenType{
 	"fn":     FUNC,
 	"class":  CLASS,
 	"var":    VAR,
+	"print":  PRINT,
 	"true":   TRUE,
 	"false":  FALSE,
 	"nil":    NIL,

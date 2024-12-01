@@ -83,8 +83,3 @@ func isNumber(v any) (int, bool) {
 		return 0.0, false
 	}
 }
-
-func isString(v any) (string, bool) {
-	s, ok := v.(string)
-	return s, ok
-}

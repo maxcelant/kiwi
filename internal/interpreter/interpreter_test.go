@@ -21,7 +21,7 @@ var _ = Describe("Interpreter", func() {
 		it = New(nil)
 	})
 
-	Describe("Visit Primary", func() {
+	Describe("Visit Primary Expr", func() {
 		When("the parse tree has a single primary number node", func() {
 			It("should return the value", func() {
 				node := expr.Primary{Value: 1}
@@ -50,7 +50,7 @@ var _ = Describe("Interpreter", func() {
 		})
 	})
 
-	Describe("Visit Grouping", func() {
+	Describe("Visit Grouping Expr", func() {
 		When("the parse tree has a grouping node with a primary number node", func() {
 			It("should return the value of the primary node", func() {
 				primaryNode := expr.Primary{Value: 1}
@@ -72,7 +72,7 @@ var _ = Describe("Interpreter", func() {
 		})
 	})
 
-	Describe("Visit Unary", func() {
+	Describe("Visit Unary Expr", func() {
 		When("the parse tree has a unary node that includes a bang and a true", func() {
 			It("should return the opposite of that value", func() {
 				node := expr.Unary{
@@ -170,7 +170,7 @@ var _ = Describe("Interpreter", func() {
 		})
 	})
 
-	Describe("Visit Binary", func() {
+	Describe("Visit Binary Expr", func() {
 		When("the parse tree has a binary node that adds two numbers", func() {
 			It("should return the sum of those numbers", func() {
 				node := expr.Binary{
@@ -681,7 +681,7 @@ var _ = Describe("Interpreter", func() {
 		})
 	})
 
-	Describe("Visit Logical", func() {
+	Describe("Visit Logical Expr", func() {
 		When("the parse tree has a logical AND node with both operands true", func() {
 			It("should return true", func() {
 				node := expr.Logical{

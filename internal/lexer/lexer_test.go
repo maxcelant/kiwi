@@ -479,6 +479,19 @@ var _ = Describe("Lexer", func() {
 				Expect(result).To(Equal([]Token{token}))
 			})
 		})
+		When("given the print keyword", func() {
+			It("returns a token list with the print keyword", func() {
+				in := "print"
+				result, _ := lexer.ScanLine(in)
+				token := Token{
+					Type:    PRINT,
+					Literal: "print",
+					Lexeme:  "print",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{token}))
+			})
+		})
 	})
 
 	Context("identifiers", func() {

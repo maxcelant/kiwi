@@ -6,6 +6,7 @@ import (
 
 	exp "github.com/maxcelant/kiwi/internal/expr"
 	"github.com/maxcelant/kiwi/internal/lexer"
+	"github.com/maxcelant/kiwi/internal/stmt"
 )
 
 type Parser struct {
@@ -17,15 +18,47 @@ func New(tokens []lexer.Token) *Parser {
 	return &Parser{tokens, 0}
 }
 
-func (p *Parser) Parse() (exp.Expr, error) {
+func (p *Parser) Parse() ([]stmt.Stmt, error) {
 	if len(p.tokens) == 0 {
 		return nil, nil
 	}
+	statements := []stmt.Stmt{}
+	for !p.isAtEnd() {
+		s, err := p.statement()
+		if err != nil {
+			return nil, fmt.Errorf("parsing error occurred: %w", err)
+		}
+		statements = append(statements, s)
+	}
+	return statements, nil
+}
+
+func (p *Parser) statement() (stmt.Stmt, error) {
+	if p.match(lexer.PRINT) {
+		return p.printStatement()
+	}
+	return p.expressionStatement()
+}
+
+func (p *Parser) printStatement() (stmt.Stmt, error) {
 	expr, err := p.expression()
 	if err != nil {
-		return nil, fmt.Errorf("parsing error occurred: %w", err)
+		return nil, err
 	}
-	return expr, nil
+	p.consume(lexer.SEMICOLON, "expect ';' after value")
+	return stmt.Print{
+		Expression: expr,
+	}, nil
+}
+
+func (p *Parser) expressionStatement() (stmt.Stmt, error) {
+	expr, err := p.expression()
+	if err != nil {
+		return nil, err
+	}
+	return stmt.Expression{
+		Expression: expr,
+	}, nil
 }
 
 func (p *Parser) expression() (exp.Expr, error) {

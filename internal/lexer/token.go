@@ -39,6 +39,7 @@ const (
 	OR
 	AND
 	FOR
+	PRINT
 	WHILE
 	RETURN
 	CLASS
