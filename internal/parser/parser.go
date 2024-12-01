@@ -278,7 +278,7 @@ func (p *Parser) consume(tokenType lexer.TokenType, errMsg string) error {
 }
 
 func (p *Parser) isAtEnd() bool {
-	return p.tokens[p.current].Type == lexer.EOF || p.current == len(p.tokens)
+	return p.tokens[p.current].Type == lexer.EOF
 }
 
 func (p *Parser) prev() lexer.Token {
