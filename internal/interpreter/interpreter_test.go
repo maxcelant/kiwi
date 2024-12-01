@@ -680,4 +680,58 @@ var _ = Describe("Interpreter", func() {
 			})
 		})
 	})
+
+	Describe("Visit Logical", func() {
+		When("the parse tree has a logical AND node with both operands true", func() {
+			It("should return true", func() {
+				node := expr.Logical{
+					Left:     expr.Primary{Value: true},
+					Operator: lexer.Token{Type: lexer.AND, Lexeme: "and", Line: 1},
+					Right:    expr.Primary{Value: true},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+		})
+
+		When("the parse tree has a logical AND node with one operand false", func() {
+			It("should return false", func() {
+				node := expr.Logical{
+					Left:     expr.Primary{Value: true},
+					Operator: lexer.Token{Type: lexer.AND, Lexeme: "and", Line: 1},
+					Right:    expr.Primary{Value: false},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
+
+		When("the parse tree has a logical OR node with both operands false", func() {
+			It("should return false", func() {
+				node := expr.Logical{
+					Left:     expr.Primary{Value: false},
+					Operator: lexer.Token{Type: lexer.OR, Lexeme: "or", Line: 1},
+					Right:    expr.Primary{Value: false},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(false))
+			})
+		})
+
+		When("the parse tree has a logical OR node with one operand true", func() {
+			It("should return true", func() {
+				node := expr.Logical{
+					Left:     expr.Primary{Value: false},
+					Operator: lexer.Token{Type: lexer.OR, Lexeme: "or", Line: 1},
+					Right:    expr.Primary{Value: true},
+				}
+				actual, err := it.Evaluate(node)
+				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(true))
+			})
+		})
+	})
 })

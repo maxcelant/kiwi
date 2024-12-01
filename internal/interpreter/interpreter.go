@@ -41,6 +41,38 @@ func (it *Interpreter) Evaluate(expr exp.Expr) (any, error) {
 }
 
 func (it *Interpreter) VisitLogical(expr exp.Expr) (any, error) {
+	logical, ok := expr.(exp.Logical)
+	if !ok {
+		return nil, fmt.Errorf("not a logical expression")
+	}
+
+	rightExpr, ok := logical.Right.(exp.Expr)
+	if !ok {
+		return nil, fmt.Errorf("unary.Right is not a type exp.Expr")
+	}
+
+	leftExpr, ok := logical.Left.(exp.Expr)
+	if !ok {
+		return nil, fmt.Errorf("unary.Left is not a type exp.Expr")
+	}
+
+	left, err := it.Evaluate(leftExpr)
+	if err != nil {
+		return nil, err
+	}
+
+	// We only evaluate the right operand if the left one is falsey
+	// If the left is truthy, we just return that one
+	if logical.Operator.Type == lexer.OR {
+		if IsTruthy(left) {
+			return left, nil
+		}
+	} else {
+		if !IsTruthy(left) {
+			return left, nil
+		}
+	}
+	return it.Evaluate(rightExpr)
 
 }
 
