@@ -8,7 +8,10 @@ type Print struct {
 	Expression expr.Expr
 }
 
-func (p Print) Accept(v Visitor) (any, error) {
-	v.VisitPrintStatement(p)
-	return nil, nil
+func (p Print) Accept(v Visitor) error {
+	err := v.VisitPrintStatement(p)
+	if err != nil {
+		return err
+	}
+	return nil
 }

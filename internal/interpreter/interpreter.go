@@ -29,7 +29,7 @@ func (it *Interpreter) Interpret() {
 }
 
 func (it *Interpreter) Execute(st stmt.Stmt) error {
-	_, err := st.Accept(it)
+	err := st.Accept(it)
 	if err != nil {
 		return err
 	}
@@ -44,29 +44,29 @@ func (it *Interpreter) Evaluate(ex expr.Expr) (any, error) {
 	return v, nil
 }
 
-func (it *Interpreter) VisitExpressionStatement(st stmt.Stmt) (any, error) {
+func (it *Interpreter) VisitExpressionStatement(st stmt.Stmt) error {
 	exprStmt, ok := st.(stmt.Expression)
 	if !ok {
-		return nil, fmt.Errorf("not an expression statement")
+		return fmt.Errorf("not an expression statement")
 	}
 	_, err := it.Evaluate(exprStmt.Expression)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return nil, nil
+	return nil
 }
 
-func (it *Interpreter) VisitPrintStatement(st stmt.Stmt) (any, error) {
+func (it *Interpreter) VisitPrintStatement(st stmt.Stmt) error {
 	prntStmt, ok := st.(stmt.Print)
 	if !ok {
-		return nil, fmt.Errorf("not an expression statement")
+		return fmt.Errorf("not an expression statement")
 	}
 	v, err := it.Evaluate(prntStmt.Expression)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	fmt.Println(Stringify(v))
-	return nil, nil
+	return nil
 }
 
 func (it *Interpreter) VisitLogical(ex expr.Expr) (any, error) {
