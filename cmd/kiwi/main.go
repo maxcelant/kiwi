@@ -58,12 +58,12 @@ func run() error {
 	}
 
 	psr = parser.New(tokens)
-	expr, err := psr.Parse()
+	stmts, err := psr.Parse()
 	if err != nil {
 		return fmt.Errorf("parse error occurred: %w", err)
 	}
 
-	it = interpreter.New(expr)
+	it = interpreter.New(stmts)
 	it.Interpret()
 
 	return nil

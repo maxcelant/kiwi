@@ -45,7 +45,10 @@ func (p *Parser) printStatement() (stmt.Stmt, error) {
 	if err != nil {
 		return nil, err
 	}
-	p.consume(lexer.SEMICOLON, "expect ';' after value")
+	err = p.consume(lexer.SEMICOLON, "expect ';' after value")
+	if err != nil {
+		return nil, err
+	}
 	return stmt.Print{
 		Expression: expr,
 	}, nil
@@ -223,7 +226,8 @@ func (p *Parser) primary() (exp.Expr, error) {
 		return exp.Grouping{Expression: expr}, nil
 	}
 
-	return nil, fmt.Errorf("%s expected expression", p.peek().Lexeme)
+	token, _ := p.peek()
+	return nil, fmt.Errorf("%s expected expression", token.Lexeme)
 }
 
 func (p *Parser) match(matchers ...lexer.TokenType) bool {
@@ -240,7 +244,11 @@ func (p *Parser) check(tokenType lexer.TokenType) bool {
 	if p.isAtEnd() {
 		return false
 	}
-	return p.peek().Type == tokenType
+	next, err := p.peek()
+	if err != nil {
+		return false
+	}
+	return next.Type == tokenType
 }
 
 func (p *Parser) advance() lexer.Token {
@@ -250,22 +258,29 @@ func (p *Parser) advance() lexer.Token {
 	return p.prev()
 }
 
-func (p *Parser) peek() lexer.Token {
-	return p.tokens[p.current]
+func (p *Parser) peek() (lexer.Token, error) {
+	if p.isAtEnd() {
+		return lexer.Token{}, errors.New("reached end of file")
+	}
+	return p.tokens[p.current], nil
+}
+
+func (p *Parser) consume(tokenType lexer.TokenType, errMsg string) error {
+	next, err := p.peek()
+	if err != nil {
+		return fmt.Errorf("%s: %w", errMsg, err)
+	}
+	if next.Type == tokenType {
+		p.advance()
+		return nil
+	}
+	return errors.New(errMsg)
+}
+
+func (p *Parser) isAtEnd() bool {
+	return p.tokens[p.current].Type == lexer.EOF || p.current == len(p.tokens)
 }
 
 func (p *Parser) prev() lexer.Token {
 	return p.tokens[p.current-1]
-}
-
-func (p *Parser) consume(tokenType lexer.TokenType, err string) error {
-	if p.peek().Type == tokenType {
-		p.advance()
-		return nil
-	}
-	return errors.New(err)
-}
-
-func (p *Parser) isAtEnd() bool {
-	return p.tokens[p.current].Type == lexer.EOF
 }

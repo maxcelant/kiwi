@@ -645,6 +645,7 @@ var _ = Describe("Parser", func() {
 					tokens := []lexer.Token{
 						{Type: lexer.PRINT, Lexeme: "print", Line: 1},
 						{Type: lexer.STRING, Literal: "test", Lexeme: "\"test\"", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -653,6 +654,19 @@ var _ = Describe("Parser", func() {
 					Expect(actual[0]).To(Equal(stmt.Print{
 						Expression: expr.Primary{Value: "test"},
 					}))
+				})
+			})
+
+			When("its a list with a print token and string but without a semicolon", func() {
+				It("returns an error", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.PRINT, Lexeme: "print", Line: 1},
+						{Type: lexer.STRING, Literal: "test", Lexeme: "\"test\"", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					_, err := parser.Parse()
+					Expect(err.Error()).To(ContainSubstring("reached end of file"))
 				})
 			})
 		})
