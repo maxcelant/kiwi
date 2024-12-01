@@ -417,6 +417,7 @@ var _ = Describe("Lexer", func() {
 				Expect(result).To(Equal([]Token{expected}))
 			})
 		})
+
 		When("given a multiple keyword", func() {
 			It("returns a list with a keywords", func() {
 				in := "true false"
@@ -445,6 +446,34 @@ var _ = Describe("Lexer", func() {
 					Type:    FUNC,
 					Literal: "fn",
 					Lexeme:  "fn",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{token}))
+			})
+		})
+
+		When("given the and keyword", func() {
+			It("returns a token list with the and keyword", func() {
+				in := "and"
+				result, _ := lexer.ScanLine(in)
+				token := Token{
+					Type:    AND,
+					Literal: "and",
+					Lexeme:  "and",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{token}))
+			})
+		})
+
+		When("given the or keyword", func() {
+			It("returns a token list with the or keyword", func() {
+				in := "or"
+				result, _ := lexer.ScanLine(in)
+				token := Token{
+					Type:    OR,
+					Literal: "or",
+					Lexeme:  "or",
 					Line:    1,
 				}
 				Expect(result).To(Equal([]Token{token}))
