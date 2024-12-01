@@ -35,13 +35,13 @@ func (p *Parser) expression() (exp.Expr, error) {
 func (p *Parser) logicOR() (exp.Expr, error) {
 	expr, err := p.logicAND()
 
-	if p.match(lexer.OR) {
+	for p.match(lexer.OR) {
 		operator := p.prev()
 		right, err := p.logicAND()
 		if err != nil {
 			return nil, err
 		}
-		expr = exp.Binary{
+		expr = exp.Logical{
 			Right:    right,
 			Operator: operator,
 			Left:     expr,
@@ -60,7 +60,7 @@ func (p *Parser) logicAND() (exp.Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		expr = exp.Binary{
+		expr = exp.Logical{
 			Right:    right,
 			Operator: operator,
 			Left:     expr,

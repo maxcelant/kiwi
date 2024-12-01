@@ -40,6 +40,10 @@ func (it *Interpreter) Evaluate(expr exp.Expr) (any, error) {
 	return v, nil
 }
 
+func (it *Interpreter) VisitLogical(expr exp.Expr) (any, error) {
+
+}
+
 func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	binary, ok := expr.(exp.Binary)
 	if !ok {

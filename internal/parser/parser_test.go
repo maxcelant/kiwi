@@ -29,7 +29,7 @@ var _ = Describe("Parser", func() {
 	})
 
 	Describe("Expressions", func() {
-		Describe("expr.Primary", func() {
+		Describe("Primary", func() {
 			When("its a list of just one nil token", func() {
 				It("returns a tree with just one primary type node", func() {
 					tokens := []lexer.Token{
@@ -153,7 +153,7 @@ var _ = Describe("Parser", func() {
 			})
 		})
 
-		Describe("expr.Unary", func() {
+		Describe("Unary", func() {
 			When("its a list with a negative and number", func() {
 				It("returns a tree with a unary node", func() {
 					tokens := []lexer.Token{
@@ -507,6 +507,96 @@ var _ = Describe("Parser", func() {
 						},
 						Operator: tokens[3],
 						Right:    expr.Primary{Value: 1},
+					}))
+				})
+			})
+		})
+
+		Describe("Logical", func() {
+			When("its a list with two true tokens and an OR", func() {
+				It("returns a tree with one logical OR node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.OR, Lexeme: "or", Line: 1},
+						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(expr.Logical{
+						Left:     expr.Primary{Value: true},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: true},
+					}))
+				})
+			})
+
+			When("its a list with two false tokens and an AND", func() {
+				It("returns a tree with one logical AND node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.FALSE, Literal: "false", Lexeme: "false", Line: 1},
+						{Type: lexer.AND, Lexeme: "and", Line: 1},
+						{Type: lexer.FALSE, Literal: "false", Lexeme: "false", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(expr.Logical{
+						Left:     expr.Primary{Value: false},
+						Operator: tokens[1],
+						Right:    expr.Primary{Value: false},
+					}))
+				})
+			})
+
+			When("its a list with multiple logical OR tokens", func() {
+				It("returns a nested logical OR tree node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.OR, Lexeme: "or", Line: 1},
+						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.OR, Lexeme: "or", Line: 1},
+						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(expr.Logical{
+						Left: expr.Logical{
+							Left:     expr.Primary{Value: true},
+							Operator: tokens[1],
+							Right:    expr.Primary{Value: true},
+						},
+						Operator: tokens[3],
+						Right:    expr.Primary{Value: true},
+					}))
+				})
+			})
+
+			When("its a list with multiple logical AND tokens", func() {
+				It("returns a nested logical AND tree node", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.AND, Lexeme: "and", Line: 1},
+						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.AND, Lexeme: "and", Line: 1},
+						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual).To(Equal(expr.Logical{
+						Left: expr.Logical{
+							Left:     expr.Primary{Value: true},
+							Operator: tokens[1],
+							Right:    expr.Primary{Value: true},
+						},
+						Operator: tokens[3],
+						Right:    expr.Primary{Value: true},
 					}))
 				})
 			})
