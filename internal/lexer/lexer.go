@@ -15,6 +15,8 @@ type Lexer struct {
 var keywords = map[string]TokenType{
 	"if":     IF,
 	"else":   ELSE,
+	"or":     OR,
+	"and":    AND,
 	"for":    FOR,
 	"while":  WHILE,
 	"return": RETURN,
