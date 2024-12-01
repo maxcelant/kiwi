@@ -4,7 +4,7 @@ import "github.com/maxcelant/kiwi/internal/lexer"
 
 type Unary struct {
 	Operator lexer.Token
-	Right    any
+	Right    Expr
 }
 
 func (u Unary) Accept(v Visitor) (any, error) {

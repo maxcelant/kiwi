@@ -3,8 +3,8 @@ package expr
 import "github.com/maxcelant/kiwi/internal/lexer"
 
 type Binary struct {
-	Right    any
-	Left     any
+	Right    Expr
+	Left     Expr
 	Operator lexer.Token
 }
 

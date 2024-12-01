@@ -1,7 +1,7 @@
 package expr
 
 type Grouping struct {
-	Expression any
+	Expression Expr
 }
 
 func (g Grouping) Accept(v Visitor) (any, error) {

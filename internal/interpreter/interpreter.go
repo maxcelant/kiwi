@@ -46,17 +46,7 @@ func (it *Interpreter) VisitLogical(expr exp.Expr) (any, error) {
 		return nil, fmt.Errorf("not a logical expression")
 	}
 
-	rightExpr, ok := logical.Right.(exp.Expr)
-	if !ok {
-		return nil, fmt.Errorf("unary.Right is not a type exp.Expr")
-	}
-
-	leftExpr, ok := logical.Left.(exp.Expr)
-	if !ok {
-		return nil, fmt.Errorf("unary.Left is not a type exp.Expr")
-	}
-
-	left, err := it.Evaluate(leftExpr)
+	left, err := it.Evaluate(logical.Left)
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +62,8 @@ func (it *Interpreter) VisitLogical(expr exp.Expr) (any, error) {
 			return left, nil
 		}
 	}
-	return it.Evaluate(rightExpr)
 
+	return it.Evaluate(logical.Right)
 }
 
 func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
@@ -82,22 +72,12 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 		return nil, fmt.Errorf("not a binary expression")
 	}
 
-	rightExpr, ok := binary.Right.(exp.Expr)
-	if !ok {
-		return nil, fmt.Errorf("unary.Right is not a type exp.Expr")
-	}
-
-	leftExpr, ok := binary.Left.(exp.Expr)
-	if !ok {
-		return nil, fmt.Errorf("unary.Left is not a type exp.Expr")
-	}
-
-	left, err := it.Evaluate(leftExpr)
+	left, err := it.Evaluate(binary.Left)
 	if err != nil {
 		return nil, err
 	}
 
-	right, err := it.Evaluate(rightExpr)
+	right, err := it.Evaluate(binary.Right)
 	if err != nil {
 		return nil, err
 	}
@@ -192,12 +172,7 @@ func (it *Interpreter) VisitUnary(expr exp.Expr) (any, error) {
 		return nil, fmt.Errorf("not a unary expression")
 	}
 
-	rightExpr, ok := unary.Right.(exp.Expr)
-	if !ok {
-		return nil, fmt.Errorf("unary.Right is not of type exp.Expr")
-	}
-
-	right, err := it.Evaluate(rightExpr)
+	right, err := it.Evaluate(unary.Right)
 	if err != nil {
 		return nil, err
 	}
@@ -230,11 +205,8 @@ func (it *Interpreter) VisitGrouping(expr exp.Expr) (any, error) {
 	if !ok {
 		return nil, fmt.Errorf("not a grouping expression")
 	}
-	expression, ok := grouping.Expression.(exp.Expr)
-	if !ok {
-		return nil, fmt.Errorf("not a grouping expression")
-	}
-	value, err := it.Evaluate(expression)
+
+	value, err := it.Evaluate(grouping.Expression)
 	if err != nil {
 		return nil, err
 	}
