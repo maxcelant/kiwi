@@ -5,6 +5,7 @@ import (
 
 	"github.com/maxcelant/kiwi/internal/expr"
 	"github.com/maxcelant/kiwi/internal/lexer"
+	"github.com/maxcelant/kiwi/internal/stmt"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -734,4 +735,68 @@ var _ = Describe("Interpreter", func() {
 			})
 		})
 	})
+
+	Describe("Visit Expression Stmt", func() {
+		When("the parse tree has an expression statement with a primary number node", func() {
+			It("should evaluate the expression without error", func() {
+				node := stmt.Expression{Expression: expr.Primary{Value: 1}}
+				err := it.Execute(node)
+				Expect(err).To(BeNil())
+			})
+		})
+
+		When("the parse tree has an expression statement with a primary string node", func() {
+			It("should evaluate the expression without error", func() {
+				node := stmt.Expression{Expression: expr.Primary{Value: "test"}}
+				err := it.Execute(node)
+				Expect(err).To(BeNil())
+			})
+		})
+
+		When("the parse tree has an expression statement with a binary addition node", func() {
+			It("should evaluate the expression without error", func() {
+				node := stmt.Expression{
+					Expression: expr.Binary{
+						Left:     expr.Primary{Value: 3},
+						Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+						Right:    expr.Primary{Value: 5},
+					},
+				}
+				err := it.Execute(node)
+				Expect(err).To(BeNil())
+			})
+		})
+
+		When("the parse tree has an expression statement with a unary minus node", func() {
+			It("should evaluate the expression without error", func() {
+				node := stmt.Expression{
+					Expression: expr.Unary{
+						Operator: lexer.Token{Type: lexer.MINUS, Lexeme: "-", Line: 1},
+						Right:    expr.Primary{Value: 5},
+					},
+				}
+				err := it.Execute(node)
+				Expect(err).To(BeNil())
+			})
+		})
+
+		When("the parse tree has an expression statement with a logical AND node", func() {
+			It("should evaluate the expression without error", func() {
+				node := stmt.Expression{
+					Expression: expr.Logical{
+						Left:     expr.Primary{Value: true},
+						Operator: lexer.Token{Type: lexer.AND, Lexeme: "and", Line: 1},
+						Right:    expr.Primary{Value: true},
+					},
+				}
+				err := it.Execute(node)
+				Expect(err).To(BeNil())
+			})
+		})
+	})
+
+	Describe("Visit Print Stmt", func() {
+
+	})
+
 })

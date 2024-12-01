@@ -3,45 +3,74 @@ package interpreter
 import (
 	"fmt"
 
-	exp "github.com/maxcelant/kiwi/internal/expr"
+	"github.com/maxcelant/kiwi/internal/expr"
 	"github.com/maxcelant/kiwi/internal/lexer"
+	"github.com/maxcelant/kiwi/internal/stmt"
 )
 
 type Interpreter struct {
-	expr exp.Expr
+	stmts []stmt.Stmt
 }
 
-func New(expr exp.Expr) *Interpreter {
+func New(stmts []stmt.Stmt) *Interpreter {
 	return &Interpreter{
-		expr: expr,
+		stmts: stmts,
 	}
 }
 
 func (it *Interpreter) Interpret() {
-	var str string
-	obj, err := it.Evaluate(it.expr)
-	if err != nil {
-		fmt.Println(err)
-		return
+	for _, st := range it.stmts {
+		err := it.Execute(st)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
-	str, err = Stringify(obj)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(str)
 }
 
-func (it *Interpreter) Evaluate(expr exp.Expr) (any, error) {
-	v, err := expr.Accept(it)
+func (it *Interpreter) Execute(st stmt.Stmt) error {
+	_, err := st.Accept(it)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (it *Interpreter) Evaluate(ex expr.Expr) (any, error) {
+	v, err := ex.Accept(it)
 	if err != nil {
 		return nil, fmt.Errorf("failed to evaluate expression: %w", err)
 	}
 	return v, nil
 }
 
-func (it *Interpreter) VisitLogical(expr exp.Expr) (any, error) {
-	logical, ok := expr.(exp.Logical)
+func (it *Interpreter) VisitExpressionStatement(st stmt.Stmt) (any, error) {
+	exprStmt, ok := st.(stmt.Expression)
+	if !ok {
+		return nil, fmt.Errorf("not an expression statement")
+	}
+	_, err := it.Evaluate(exprStmt.Expression)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (it *Interpreter) VisitPrintStatement(st stmt.Stmt) (any, error) {
+	prntStmt, ok := st.(stmt.Print)
+	if !ok {
+		return nil, fmt.Errorf("not an expression statement")
+	}
+	v, err := it.Evaluate(prntStmt.Expression)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(Stringify(v))
+	return nil, nil
+}
+
+func (it *Interpreter) VisitLogical(ex expr.Expr) (any, error) {
+	logical, ok := ex.(expr.Logical)
 	if !ok {
 		return nil, fmt.Errorf("not a logical expression")
 	}
@@ -66,8 +95,8 @@ func (it *Interpreter) VisitLogical(expr exp.Expr) (any, error) {
 	return it.Evaluate(logical.Right)
 }
 
-func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
-	binary, ok := expr.(exp.Binary)
+func (it *Interpreter) VisitBinary(ex expr.Expr) (any, error) {
+	binary, ok := ex.(expr.Binary)
 	if !ok {
 		return nil, fmt.Errorf("not a binary expression")
 	}
@@ -166,8 +195,8 @@ func (it *Interpreter) VisitBinary(expr exp.Expr) (any, error) {
 	return "", nil
 }
 
-func (it *Interpreter) VisitUnary(expr exp.Expr) (any, error) {
-	unary, ok := expr.(exp.Unary)
+func (it *Interpreter) VisitUnary(ex expr.Expr) (any, error) {
+	unary, ok := ex.(expr.Unary)
 	if !ok {
 		return nil, fmt.Errorf("not a unary expression")
 	}
@@ -192,16 +221,16 @@ func (it *Interpreter) VisitUnary(expr exp.Expr) (any, error) {
 	return "", nil
 }
 
-func (it *Interpreter) VisitPrimary(expr exp.Expr) (any, error) {
-	primary, ok := expr.(exp.Primary)
+func (it *Interpreter) VisitPrimary(ex expr.Expr) (any, error) {
+	primary, ok := ex.(expr.Primary)
 	if !ok {
 		return nil, fmt.Errorf("not a primary expression")
 	}
 	return primary.Value, nil
 }
 
-func (it *Interpreter) VisitGrouping(expr exp.Expr) (any, error) {
-	grouping, ok := expr.(exp.Grouping)
+func (it *Interpreter) VisitGrouping(ex expr.Expr) (any, error) {
+	grouping, ok := ex.(expr.Grouping)
 	if !ok {
 		return nil, fmt.Errorf("not a grouping expression")
 	}
