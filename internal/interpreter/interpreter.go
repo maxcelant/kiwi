@@ -65,7 +65,7 @@ func (it *Interpreter) VisitPrintStatement(st stmt.Stmt) (any, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(Stringify(v))
+	fmt.Print(Stringify(v))
 	return nil, nil
 }
 

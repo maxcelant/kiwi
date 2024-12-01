@@ -40,6 +40,7 @@ var _ = Describe("Parser", func() {
 							Lexeme:  "nil",
 							Line:    1,
 						},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -58,6 +59,7 @@ var _ = Describe("Parser", func() {
 							Lexeme:  "true",
 							Line:    1,
 						},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -76,6 +78,7 @@ var _ = Describe("Parser", func() {
 							Lexeme:  "false",
 							Line:    1,
 						},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -94,6 +97,7 @@ var _ = Describe("Parser", func() {
 							Lexeme:  "\"foo\"",
 							Line:    1,
 						},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -112,6 +116,7 @@ var _ = Describe("Parser", func() {
 							Lexeme:  "5",
 							Line:    1,
 						},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -127,6 +132,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.LEFT_PAREN, Lexeme: "(", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.RIGHT_PAREN, Lexeme: ")", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -143,6 +149,7 @@ var _ = Describe("Parser", func() {
 					tokens := []lexer.Token{
 						{Type: lexer.LEFT_PAREN, Lexeme: "(", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -160,6 +167,7 @@ var _ = Describe("Parser", func() {
 					tokens := []lexer.Token{
 						{Type: lexer.MINUS, Lexeme: "-", Line: 1},
 						{Type: lexer.NUMBER, Literal: 5, Lexeme: "5", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -177,6 +185,7 @@ var _ = Describe("Parser", func() {
 					tokens := []lexer.Token{
 						{Type: lexer.BANG, Lexeme: "!", Line: 1},
 						{Type: lexer.NUMBER, Literal: 5, Lexeme: "5", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -199,6 +208,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.SLASH, Lexeme: "/", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -218,6 +228,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.STAR, Lexeme: "*", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -239,6 +250,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.STAR, Lexeme: "*", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -264,6 +276,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.PLUS, Lexeme: "+", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -285,6 +298,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.MINUS, Lexeme: "-", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -308,6 +322,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.PLUS, Lexeme: "+", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -335,6 +350,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.GREATER, Lexeme: ">", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -356,6 +372,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.LESS, Lexeme: "<", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -377,6 +394,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.GREATER_EQ, Lexeme: ">=", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -398,6 +416,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.LESS_EQ, Lexeme: "<=", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -421,6 +440,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.GREATER, Lexeme: ">", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -448,6 +468,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.EQUAL_EQUAL, Lexeme: "==", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -469,6 +490,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.BANG_EQ, Lexeme: "!=", Line: 1},
 						{Type: lexer.NUMBER, Literal: 2, Lexeme: "2", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -492,6 +514,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.EQUAL_EQUAL, Lexeme: "==", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -519,6 +542,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
 						{Type: lexer.BANG_EQ, Lexeme: "!=", Line: 1},
 						{Type: lexer.NUMBER, Literal: 1, Lexeme: "1", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -546,6 +570,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
 						{Type: lexer.OR, Lexeme: "or", Line: 1},
 						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -567,6 +592,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.FALSE, Literal: "false", Lexeme: "false", Line: 1},
 						{Type: lexer.AND, Lexeme: "and", Line: 1},
 						{Type: lexer.FALSE, Literal: "false", Lexeme: "false", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -590,6 +616,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
 						{Type: lexer.OR, Lexeme: "or", Line: 1},
 						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)
@@ -617,6 +644,7 @@ var _ = Describe("Parser", func() {
 						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
 						{Type: lexer.AND, Lexeme: "and", Line: 1},
 						{Type: lexer.TRUE, Literal: "true", Lexeme: "true", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
 						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
 					}
 					parser := New(tokens)

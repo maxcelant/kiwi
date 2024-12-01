@@ -59,6 +59,10 @@ func (p *Parser) expressionStatement() (stmt.Stmt, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = p.consume(lexer.SEMICOLON, "expect ';' after value")
+	if err != nil {
+		return nil, err
+	}
 	return stmt.Expression{
 		Expression: expr,
 	}, nil
