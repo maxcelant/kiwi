@@ -29,7 +29,45 @@ func (p *Parser) Parse() (exp.Expr, error) {
 }
 
 func (p *Parser) expression() (exp.Expr, error) {
-	return p.equality()
+	return p.logicOR()
+}
+
+func (p *Parser) logicOR() (exp.Expr, error) {
+	expr, err := p.logicAND()
+
+	if p.match(lexer.OR) {
+		operator := p.prev()
+		right, err := p.logicAND()
+		if err != nil {
+			return nil, err
+		}
+		expr = exp.Binary{
+			Right:    right,
+			Operator: operator,
+			Left:     expr,
+		}
+	}
+
+	return expr, err
+}
+
+func (p *Parser) logicAND() (exp.Expr, error) {
+	expr, err := p.equality()
+
+	for p.match(lexer.AND) {
+		operator := p.prev()
+		right, err := p.equality()
+		if err != nil {
+			return nil, err
+		}
+		expr = exp.Binary{
+			Right:    right,
+			Operator: operator,
+			Left:     expr,
+		}
+	}
+
+	return expr, err
 }
 
 func (p *Parser) equality() (exp.Expr, error) {
