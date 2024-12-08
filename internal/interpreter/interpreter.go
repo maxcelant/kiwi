@@ -44,6 +44,14 @@ func (it *Interpreter) Evaluate(ex expr.Expr) (any, error) {
 	return v, nil
 }
 
+func (it *Interpreter) VisitVarDeclaration(st stmt.Stmt) error {
+	varStmt, ok := st.(stmt.Var)
+	if !ok {
+		return fmt.Errorf("not an expression statement")
+	}
+	_, err := it.Evaluate(varStmt.Initializer)
+}
+
 func (it *Interpreter) VisitExpressionStatement(st stmt.Stmt) error {
 	exprStmt, ok := st.(stmt.Expression)
 	if !ok {
@@ -227,6 +235,11 @@ func (it *Interpreter) VisitPrimary(ex expr.Expr) (any, error) {
 		return nil, fmt.Errorf("not a primary expression")
 	}
 	return primary.Value, nil
+}
+
+// todo: implement
+func (it *Interpreter) VisitVariable(ex expr.Expr) (any, error) {
+	return nil, nil
 }
 
 func (it *Interpreter) VisitGrouping(ex expr.Expr) (any, error) {

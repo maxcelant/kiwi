@@ -14,8 +14,13 @@ Things like:
 - ✅ Parser Complete
 - ✅ Interpreter Complete
 - ✅ Support for Expressions
-- ❌ Support for Statements
+- ✅ Support for Statements
+- ❌ Synchronize on Errors
 - ❌ Loops
 - ❌ Funcions
 - ❌ Lists Support
 - ❌ Maps Support
+
+### Where Am I At?
+
+Environments...
