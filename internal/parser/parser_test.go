@@ -698,5 +698,60 @@ var _ = Describe("Parser", func() {
 				})
 			})
 		})
+
+		Describe("Var", func() {
+			When("its a list with a var and an identifier", func() {
+				It("returns a var declaration", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.VAR, Lexeme: "var", Line: 1},
+						{Type: lexer.IDENTIFIER, Lexeme: "foo", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual[0]).To(Equal(stmt.Var{
+						Name: lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "foo", Line: 1},
+					}))
+				})
+			})
+
+			When("its a list with a var, identifier and initializer", func() {
+				It("returns a var declaration with an initializer", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.VAR, Lexeme: "var", Line: 1},
+						{Type: lexer.IDENTIFIER, Lexeme: "foo", Line: 1},
+						{Type: lexer.EQUAL, Lexeme: "=", Line: 1},
+						{Type: lexer.TRUE, Lexeme: "true", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual[0]).To(Equal(stmt.Var{
+						Name:        lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "foo", Line: 1},
+						Initializer: expr.Primary{Value: true},
+					}))
+				})
+			})
+
+			When("its a list with a var and a non-identifier token", func() {
+				It("returns an error", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.VAR, Lexeme: "var", Line: 1},
+						{Type: lexer.NUMBER, Lexeme: "123", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).ToNot(BeNil())
+					Expect(actual).To(BeNil())
+					Expect(err.Error()).To(ContainSubstring("expect variable name"))
+				})
+			})
+		})
 	})
 })

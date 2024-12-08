@@ -7,7 +7,7 @@ import (
 
 type Var struct {
 	Name        lexer.Token
-	Initializer *expr.Expr // Can be null
+	Initializer expr.Expr // Can be null
 }
 
 func (vr Var) Accept(v Visitor) error {

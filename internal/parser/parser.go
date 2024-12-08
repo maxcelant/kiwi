@@ -24,7 +24,7 @@ func (p *Parser) Parse() ([]stmt.Stmt, error) {
 	}
 	statements := []stmt.Stmt{}
 	for !p.isAtEnd() {
-		s, err := p.statement()
+		s, err := p.declaration()
 		if err != nil {
 			return nil, fmt.Errorf("parsing error occurred: %w", err)
 		}
@@ -33,7 +33,40 @@ func (p *Parser) Parse() ([]stmt.Stmt, error) {
 	return statements, nil
 }
 
+func (p *Parser) declaration() (stmt.Stmt, error) {
+	if p.match(lexer.VAR) {
+		return p.varDeclaration()
+	}
+	return p.statement()
+}
+
+func (p *Parser) varDeclaration() (stmt.Stmt, error) {
+	var err error
+	var initializer exp.Expr
+	name, err := p.consume(lexer.IDENTIFIER, "expect variable name")
+	if err != nil {
+		return nil, err
+	}
+	if p.match(lexer.EQUAL) {
+		initializer, err = p.expression()
+		if err != nil {
+			return nil, err
+		}
+	}
+	_, err = p.consume(lexer.SEMICOLON, "expect ';' after value")
+	if err != nil {
+		return nil, err
+	}
+	return stmt.Var{
+		Name:        name,
+		Initializer: initializer,
+	}, nil
+}
+
 func (p *Parser) statement() (stmt.Stmt, error) {
+	if p.match(lexer.VAR) {
+		return p.varDeclaration()
+	}
 	if p.match(lexer.PRINT) {
 		return p.printStatement()
 	}
@@ -45,7 +78,7 @@ func (p *Parser) printStatement() (stmt.Stmt, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = p.consume(lexer.SEMICOLON, "expect ';' after value")
+	_, err = p.consume(lexer.SEMICOLON, "expect ';' after value")
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +92,7 @@ func (p *Parser) expressionStatement() (stmt.Stmt, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = p.consume(lexer.SEMICOLON, "expect ';' after value")
+	_, err = p.consume(lexer.SEMICOLON, "expect ';' after value")
 	if err != nil {
 		return nil, err
 	}
@@ -223,7 +256,7 @@ func (p *Parser) primary() (exp.Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = p.consume(lexer.RIGHT_PAREN, "Expected right parent ')' after expression")
+		_, err = p.consume(lexer.RIGHT_PAREN, "Expected right parent ')' after expression")
 		if err != nil {
 			return nil, err
 		}
@@ -269,16 +302,15 @@ func (p *Parser) peek() (lexer.Token, error) {
 	return p.tokens[p.current], nil
 }
 
-func (p *Parser) consume(tokenType lexer.TokenType, errMsg string) error {
+func (p *Parser) consume(tokenType lexer.TokenType, errMsg string) (lexer.Token, error) {
 	next, err := p.peek()
 	if err != nil {
-		return fmt.Errorf("%s: %w", errMsg, err)
+		return lexer.Token{}, fmt.Errorf("%s: %w", errMsg, err)
 	}
 	if next.Type == tokenType {
-		p.advance()
-		return nil
+		return p.advance(), nil
 	}
-	return errors.New(errMsg)
+	return lexer.Token{}, errors.New(errMsg)
 }
 
 func (p *Parser) isAtEnd() bool {
