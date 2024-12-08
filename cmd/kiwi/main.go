@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/maxcelant/kiwi/internal/env"
 	"github.com/maxcelant/kiwi/internal/interpreter"
 	"github.com/maxcelant/kiwi/internal/lexer"
 	"github.com/maxcelant/kiwi/internal/parser"
@@ -63,7 +64,7 @@ func run() error {
 		return fmt.Errorf("parse error occurred: %w", err)
 	}
 
-	it = interpreter.New(stmts)
+	it = interpreter.New(stmts, env.New())
 	it.Interpret()
 
 	return nil

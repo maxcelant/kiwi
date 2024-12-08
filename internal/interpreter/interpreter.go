@@ -3,18 +3,21 @@ package interpreter
 import (
 	"fmt"
 
+	"github.com/maxcelant/kiwi/internal/env"
 	"github.com/maxcelant/kiwi/internal/expr"
 	"github.com/maxcelant/kiwi/internal/lexer"
 	"github.com/maxcelant/kiwi/internal/stmt"
 )
 
 type Interpreter struct {
-	stmts []stmt.Stmt
+	stmts       []stmt.Stmt
+	environment env.Environment
 }
 
-func New(stmts []stmt.Stmt) *Interpreter {
+func New(stmts []stmt.Stmt, environment env.Environment) *Interpreter {
 	return &Interpreter{
-		stmts: stmts,
+		stmts:       stmts,
+		environment: environment,
 	}
 }
 
@@ -45,11 +48,23 @@ func (it *Interpreter) Evaluate(ex expr.Expr) (any, error) {
 }
 
 func (it *Interpreter) VisitVarDeclaration(st stmt.Stmt) error {
+	var err error
+	var v any
 	varStmt, ok := st.(stmt.Var)
 	if !ok {
 		return fmt.Errorf("not an expression statement")
 	}
-	_, err := it.Evaluate(varStmt.Initializer)
+	if varStmt.Initializer != nil {
+		v, err = it.Evaluate(varStmt.Initializer)
+		if err != nil {
+			return err
+		}
+	} else {
+		v = nil
+	}
+
+	it.environment.Define(varStmt.Name.Lexeme, v)
+	return nil
 }
 
 func (it *Interpreter) VisitExpressionStatement(st stmt.Stmt) error {

@@ -3,6 +3,7 @@ package interpreter
 import (
 	"testing"
 
+	"github.com/maxcelant/kiwi/internal/env"
 	"github.com/maxcelant/kiwi/internal/expr"
 	"github.com/maxcelant/kiwi/internal/lexer"
 	"github.com/maxcelant/kiwi/internal/stmt"
@@ -19,7 +20,7 @@ var it *Interpreter
 
 var _ = Describe("Interpreter", func() {
 	BeforeEach(func() {
-		it = New(nil)
+		it = New(nil, env.New())
 	})
 
 	Describe("Visit Primary Expr", func() {
@@ -799,4 +800,49 @@ var _ = Describe("Interpreter", func() {
 
 	})
 
+	Describe("Var Declaration", func() {
+		When("the parse tree has a var declaration with an initializer", func() {
+			It("should define the variable in the environment", func() {
+				node := stmt.Var{
+					Name:        lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "x", Line: 1},
+					Initializer: expr.Primary{Value: 42},
+				}
+				err := it.VisitVarDeclaration(node)
+				Expect(err).To(BeNil())
+				value, err := it.environment.Get(lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "x"})
+				Expect(err).To(BeNil())
+				Expect(value).To(Equal(42))
+			})
+		})
+
+		When("the parse tree has a var declaration without an initializer", func() {
+			It("should define the variable with a nil value in the environment", func() {
+				node := stmt.Var{
+					Name:        lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "y", Line: 1},
+					Initializer: nil,
+				}
+				err := it.VisitVarDeclaration(node)
+				Expect(err).To(BeNil())
+				value, err := it.environment.Get(lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "y"})
+				Expect(err).To(BeNil())
+				Expect(value).To(BeNil())
+			})
+		})
+
+		When("the parse tree has a var declaration with an invalid initializer", func() {
+			It("should return an error", func() {
+				node := stmt.Var{
+					Name: lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "z", Line: 1},
+					Initializer: expr.Binary{
+						Left:     expr.Primary{Value: 1},
+						Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+						Right:    expr.Primary{Value: "invalid"},
+					},
+				}
+				err := it.VisitVarDeclaration(node)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(ContainSubstring("operands must both be a numbers or strings for add operation"))
+			})
+		})
+	})
 })
