@@ -64,9 +64,6 @@ func (p *Parser) varDeclaration() (stmt.Stmt, error) {
 }
 
 func (p *Parser) statement() (stmt.Stmt, error) {
-	if p.match(lexer.VAR) {
-		return p.varDeclaration()
-	}
 	if p.match(lexer.PRINT) {
 		return p.printStatement()
 	}
@@ -250,6 +247,9 @@ func (p *Parser) primary() (exp.Expr, error) {
 	}
 	if p.match(lexer.NUMBER) {
 		return exp.Primary{Value: p.prev().Literal}, nil
+	}
+	if p.match(lexer.IDENTIFIER) {
+		return exp.Variable{Name: p.prev()}, nil
 	}
 	if p.match(lexer.LEFT_PAREN) {
 		expr, err := p.expression()
