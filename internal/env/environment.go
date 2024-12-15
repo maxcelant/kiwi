@@ -1,3 +1,5 @@
+// if yes, then assign the new value to that variable int the environment
+// if yes, then assign the new value to that variable int the environment
 package env
 
 import (
@@ -14,6 +16,14 @@ func New() Environment {
 	return Environment{
 		Values: make(map[string]any),
 	}
+}
+
+func (e *Environment) Assign(name lexer.Token, value any) error {
+	if _, ok := e.Values[name.Lexeme]; !ok {
+		return fmt.Errorf("undefined variable: '%s'", name.Lexeme)
+	}
+	e.Values[name.Lexeme] = value
+	return nil
 }
 
 func (e *Environment) Define(name string, value any) {
