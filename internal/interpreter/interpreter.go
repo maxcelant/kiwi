@@ -11,10 +11,10 @@ import (
 
 type Interpreter struct {
 	stmts       []stmt.Stmt
-	environment env.Environment
+	environment *env.Environment
 }
 
-func New(stmts []stmt.Stmt, environment env.Environment) *Interpreter {
+func New(stmts []stmt.Stmt, environment *env.Environment) *Interpreter {
 	return &Interpreter{
 		stmts:       stmts,
 		environment: environment,
@@ -54,7 +54,7 @@ func (it *Interpreter) VisitBlockStatement(st stmt.Stmt) error {
 	}
 
 	parent := it.environment
-	child := env.New(&it.environment)
+	child := env.New(parent)
 	it.environment = child
 
 	for _, st := range block.Statements {

@@ -13,8 +13,8 @@ type Environment struct {
 	Parent *Environment
 }
 
-func New(parent *Environment) Environment {
-	return Environment{
+func New(parent *Environment) *Environment {
+	return &Environment{
 		Values: make(map[string]any),
 		Parent: parent,
 	}
