@@ -93,7 +93,22 @@ func (it *Interpreter) VisitPrintStatement(st stmt.Stmt) error {
 }
 
 func (it *Interpreter) VisitAssign(ex expr.Expr) (any, error) {
-	// todo: implement
+	assign, ok := ex.(expr.Assign)
+	if !ok {
+		return nil, fmt.Errorf("not an assign expression")
+	}
+
+	value, err := it.Evaluate(assign.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	err = it.environment.Assign(assign.Name, value)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
 }
 
 func (it *Interpreter) VisitLogical(ex expr.Expr) (any, error) {
