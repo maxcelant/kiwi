@@ -47,6 +47,27 @@ func (it *Interpreter) Evaluate(ex expr.Expr) (any, error) {
 	return v, nil
 }
 
+func (it *Interpreter) VisitBlockStatement(st stmt.Stmt) error {
+	block, ok := st.(stmt.Block)
+	if !ok {
+		return fmt.Errorf("not an block statement")
+	}
+
+	parent := it.environment
+	child := env.New(&it.environment)
+	it.environment = child
+
+	for _, st := range block.Statements {
+		err := it.Execute(st)
+		if err != nil {
+			return err
+		}
+	}
+
+	it.environment = parent
+	return nil
+}
+
 func (it *Interpreter) VisitVarDeclaration(st stmt.Stmt) error {
 	var err error
 	var v any
