@@ -11,6 +11,13 @@ Things like:
 Theres a file in `test/sample.kiwi` which you can add your code into. Right now it's pretty basic
 
 ```js
+// Math
+var x = (100 + 15) / 3;
+print x;
+
+// Conditions
+print "foo" or "bar";
+
 // Variable Declaration
 var name = "John";
 
