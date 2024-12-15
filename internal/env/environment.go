@@ -17,7 +17,6 @@ func New() Environment {
 }
 
 func (e *Environment) Define(name string, value any) {
-	fmt.Println("DEFINE", name, value)
 	e.Values[name] = value
 }
 

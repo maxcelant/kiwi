@@ -92,6 +92,10 @@ func (it *Interpreter) VisitPrintStatement(st stmt.Stmt) error {
 	return nil
 }
 
+func (it *Interpreter) VisitAssign(ex expr.Expr) (any, error) {
+	// todo: implement
+}
+
 func (it *Interpreter) VisitLogical(ex expr.Expr) (any, error) {
 	logical, ok := ex.(expr.Logical)
 	if !ok {

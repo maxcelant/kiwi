@@ -664,6 +664,29 @@ var _ = Describe("Parser", func() {
 				})
 			})
 		})
+
+		Describe("Assignment", func() {
+			When("its a list with a variable assignment", func() {
+				It("returns an assignment expression", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.IDENTIFIER, Lexeme: "foo", Line: 1},
+						{Type: lexer.EQUAL, Lexeme: "=", Line: 1},
+						{Type: lexer.NUMBER, Literal: 42, Lexeme: "42", Line: 1},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual[0]).To(Equal(stmt.Expression{
+						Expression: expr.Assign{
+							Name:  tokens[0],
+							Value: expr.Primary{Value: 42},
+						},
+					}))
+				})
+			})
+		})
 	})
 
 	Describe("Statements", func() {

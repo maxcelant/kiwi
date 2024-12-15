@@ -1,6 +1,7 @@
 package expr
 
 type Visitor interface {
+	VisitAssign(Expr) (any, error)
 	VisitVariable(Expr) (any, error)
 	VisitLogical(Expr) (any, error)
 	VisitBinary(Expr) (any, error)

@@ -99,7 +99,31 @@ func (p *Parser) expressionStatement() (stmt.Stmt, error) {
 }
 
 func (p *Parser) expression() (exp.Expr, error) {
-	return p.logicOR()
+	return p.assignment()
+}
+
+func (p *Parser) assignment() (exp.Expr, error) {
+	expr, err := p.logicOR()
+
+	if p.match(lexer.EQUAL) {
+		value, err := p.assignment()
+		if err != nil {
+			return nil, err
+		}
+		// This allows us to verify the left-hand value is an expression that *can*
+		// have something assigned to it, otherwise, this in invalid
+		variable, ok := expr.(exp.Variable)
+		if !ok {
+			return nil, fmt.Errorf("invalid assignment target")
+		}
+		name := variable.Name
+		return exp.Assign{
+			Name:  name,
+			Value: value,
+		}, nil
+	}
+
+	return expr, err
 }
 
 func (p *Parser) logicOR() (exp.Expr, error) {
