@@ -737,6 +737,55 @@ var _ = Describe("Interpreter", func() {
 		})
 	})
 
+	Describe("Visit Assign Expr", func() {
+		Describe("Visit Assign Expr", func() {
+			When("the parse tree has an assign expression with a valid variable", func() {
+				It("should assign the value to the variable in the environment", func() {
+					it.environment.Define("a", 10)
+					node := expr.Assign{
+						Name:  lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "a", Line: 1},
+						Value: expr.Primary{Value: 20},
+					}
+					actual, err := it.Evaluate(node)
+					Expect(err).To(BeNil())
+					Expect(actual).To(BeNil())
+					value, err := it.environment.Get(lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "a"})
+					Expect(err).To(BeNil())
+					Expect(value).To(Equal(20))
+				})
+			})
+
+			When("the parse tree has an assign expression with an undefined variable", func() {
+				It("should return an error", func() {
+					node := expr.Assign{
+						Name:  lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "b", Line: 1},
+						Value: expr.Primary{Value: 20},
+					}
+					_, err := it.Evaluate(node)
+					Expect(err).ToNot(BeNil())
+					Expect(err.Error()).To(ContainSubstring("undefined variable: 'b'"))
+				})
+			})
+
+			When("the parse tree has an assign expression with an invalid value", func() {
+				It("should return an error", func() {
+					it.environment.Define("c", 10)
+					node := expr.Assign{
+						Name: lexer.Token{Type: lexer.IDENTIFIER, Lexeme: "c", Line: 1},
+						Value: expr.Binary{
+							Left:     expr.Primary{Value: 1},
+							Operator: lexer.Token{Type: lexer.PLUS, Lexeme: "+", Line: 1},
+							Right:    expr.Primary{Value: "invalid"},
+						},
+					}
+					_, err := it.Evaluate(node)
+					Expect(err).ToNot(BeNil())
+					Expect(err.Error()).To(ContainSubstring("operands must both be a numbers or strings for add operation"))
+				})
+			})
+		})
+	})
+
 	Describe("Visit Expression Stmt", func() {
 		When("the parse tree has an expression statement with a primary number node", func() {
 			It("should evaluate the expression without error", func() {
@@ -845,4 +894,5 @@ var _ = Describe("Interpreter", func() {
 			})
 		})
 	})
+
 })
