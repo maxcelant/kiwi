@@ -212,12 +212,13 @@ func (l *Lexer) handleNumber() error {
 func (l *Lexer) handleString() error {
 	for {
 		next := l.peek()
-		if next == 0 || next == '"' || !isAlphaNumeric(next) {
+		if next == 0 || next == '"' {
 			break
 		}
-		if isAlphaNumeric(next) {
-			l.advance()
+		if next == '\n' {
+			l.Line += 1
 		}
+		l.advance()
 	}
 	if l.atEnd() {
 		return errors.New("unterminated string")
