@@ -20,7 +20,7 @@ var it *Interpreter
 
 var _ = Describe("Interpreter", func() {
 	BeforeEach(func() {
-		it = New(nil, env.New())
+		it = New(nil, env.New(nil))
 	})
 
 	Describe("Visit Primary Expr", func() {

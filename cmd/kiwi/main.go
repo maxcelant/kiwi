@@ -64,7 +64,7 @@ func run() error {
 		return fmt.Errorf("parse error occurred: %w", err)
 	}
 
-	it = interpreter.New(stmts, env.New())
+	it = interpreter.New(stmts, env.New(nil))
 	it.Interpret()
 
 	return nil
