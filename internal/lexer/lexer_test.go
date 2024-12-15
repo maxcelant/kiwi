@@ -133,6 +133,20 @@ var _ = Describe("Lexer", func() {
 			})
 		})
 
+		When("its a string with a space in the middle", func() {
+			It("should return a list with just a single string token", func() {
+				in := "\"foo bar\""
+				result, _ := lexer.ScanLine(in)
+				expected := Token{
+					Type:    STRING,
+					Literal: "foo bar",
+					Lexeme:  "\"foo bar\"",
+					Line:    1,
+				}
+				Expect(result).To(Equal([]Token{expected}))
+			})
+		})
+
 	})
 
 	Context("numbers", func() {
