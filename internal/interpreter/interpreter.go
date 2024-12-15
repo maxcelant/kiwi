@@ -271,9 +271,16 @@ func (it *Interpreter) VisitPrimary(ex expr.Expr) (any, error) {
 	return primary.Value, nil
 }
 
-// todo: implement
 func (it *Interpreter) VisitVariable(ex expr.Expr) (any, error) {
-	return nil, nil
+	variable, ok := ex.(expr.Variable)
+	if !ok {
+		return nil, fmt.Errorf("not a variable expression")
+	}
+	val, err := it.environment.Get(variable.Name)
+	if err != nil {
+		return nil, err
+	}
+	return val, nil
 }
 
 func (it *Interpreter) VisitGrouping(ex expr.Expr) (any, error) {

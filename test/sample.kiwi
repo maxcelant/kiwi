@@ -1,1 +1,9 @@
-print nil or "foo";
+
+// Variable Declaration
+var name = "John";
+
+// Variable Assignment
+name = "Jane";
+
+// Printing to STDOUT
+print name;

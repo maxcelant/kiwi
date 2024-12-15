@@ -7,6 +7,20 @@ Things like:
 - Simple to use heap and tree datastructures
 - Variety of string helper functions
 
+### How to Run:
+Theres a file in `test/sample.kiwi` which you can add your code into. Right now it's pretty basic
+
+```js
+// Variable Declaration
+var name = "John";
+
+// Variable Assignment
+name = "Jane";
+
+// Printing to STDOUT
+print name;
+```
+
 ---
 
 #### Todo
@@ -23,4 +37,4 @@ Things like:
 
 ### Where Am I At?
 
-Assignment expression
+Code Blocks...
