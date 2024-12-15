@@ -776,5 +776,104 @@ var _ = Describe("Parser", func() {
 				})
 			})
 		})
+
+		Describe("Block", func() {
+			When("its a list with an empty block", func() {
+				It("returns a block statement with no statements", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.LEFT_BRACE, Lexeme: "{", Line: 1},
+						{Type: lexer.RIGHT_BRACE, Lexeme: "}", Line: 1},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 1},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual[0]).To(Equal(stmt.Block{
+						Statements: nil,
+					}))
+				})
+			})
+
+			When("its a list with a block containing a single statement", func() {
+				It("returns a block statement with one statement", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.LEFT_BRACE, Lexeme: "{", Line: 1},
+						{Type: lexer.PRINT, Lexeme: "print", Line: 2},
+						{Type: lexer.STRING, Literal: "test", Lexeme: "\"test\"", Line: 2},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 2},
+						{Type: lexer.RIGHT_BRACE, Lexeme: "}", Line: 3},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 3},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual[0]).To(Equal(stmt.Block{
+						Statements: []stmt.Stmt{
+							stmt.Print{
+								Expression: expr.Primary{Value: "test"},
+							},
+						},
+					}))
+				})
+			})
+
+			When("its a list with a block containing multiple statements", func() {
+				It("returns a block statement with multiple statements", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.LEFT_BRACE, Lexeme: "{", Line: 1},
+						{Type: lexer.PRINT, Lexeme: "print", Line: 2},
+						{Type: lexer.STRING, Literal: "test1", Lexeme: "\"test1\"", Line: 2},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 2},
+						{Type: lexer.PRINT, Lexeme: "print", Line: 3},
+						{Type: lexer.STRING, Literal: "test2", Lexeme: "\"test2\"", Line: 3},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 3},
+						{Type: lexer.RIGHT_BRACE, Lexeme: "}", Line: 4},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 4},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual[0]).To(Equal(stmt.Block{
+						Statements: []stmt.Stmt{
+							stmt.Print{
+								Expression: expr.Primary{Value: "test1"},
+							},
+							stmt.Print{
+								Expression: expr.Primary{Value: "test2"},
+							},
+						},
+					}))
+				})
+			})
+
+			When("its a list with a block containing nested blocks", func() {
+				It("returns a block statement with nested block statements", func() {
+					tokens := []lexer.Token{
+						{Type: lexer.LEFT_BRACE, Lexeme: "{", Line: 1},
+						{Type: lexer.LEFT_BRACE, Lexeme: "{", Line: 2},
+						{Type: lexer.PRINT, Lexeme: "print", Line: 3},
+						{Type: lexer.STRING, Literal: "nested", Lexeme: "\"nested\"", Line: 3},
+						{Type: lexer.SEMICOLON, Lexeme: ";", Line: 3},
+						{Type: lexer.RIGHT_BRACE, Lexeme: "}", Line: 4},
+						{Type: lexer.RIGHT_BRACE, Lexeme: "}", Line: 5},
+						{Type: lexer.EOF, Lexeme: "EOF", Line: 5},
+					}
+					parser := New(tokens)
+					actual, err := parser.Parse()
+					Expect(err).To(BeNil())
+					Expect(actual[0]).To(Equal(stmt.Block{
+						Statements: []stmt.Stmt{
+							stmt.Block{
+								Statements: []stmt.Stmt{
+									stmt.Print{
+										Expression: expr.Primary{Value: "nested"},
+									},
+								},
+							},
+						},
+					}))
+				})
+			})
+		})
 	})
 })

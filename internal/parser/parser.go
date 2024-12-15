@@ -67,7 +67,30 @@ func (p *Parser) statement() (stmt.Stmt, error) {
 	if p.match(lexer.PRINT) {
 		return p.printStatement()
 	}
+	if p.match(lexer.LEFT_BRACE) {
+		return p.blockStatement()
+	}
 	return p.expressionStatement()
+}
+
+func (p *Parser) blockStatement() (stmt.Stmt, error) {
+	var stmts []stmt.Stmt
+	for !p.check(lexer.RIGHT_BRACE) && !p.isAtEnd() {
+		s, err := p.declaration()
+		if err != nil {
+			return nil, err
+		}
+		stmts = append(stmts, s)
+	}
+
+	_, err := p.consume(lexer.RIGHT_BRACE, "expect closing '}' after block")
+	if err != nil {
+		return nil, err
+	}
+
+	return stmt.Block{
+		Statements: stmts,
+	}, nil
 }
 
 func (p *Parser) printStatement() (stmt.Stmt, error) {
