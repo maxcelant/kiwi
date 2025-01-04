@@ -44,5 +44,4 @@ print name;
 
 ### Where Am I At?
 
-Running into a weird stack overflow bug when I run current file.
-I think it has something to do with going to the parent environment when doing a lookup for a variable.
+if statements
